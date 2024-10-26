@@ -10,22 +10,27 @@ namespace shard_db.controllers;
 public class DevicesController(ApplicationDbContext context, RandomWriteService randomWriteService) : ControllerBase
 {
     [HttpGet("{deviceId}")]
-    public async Task<ActionResult<Device>> GetDevice(int deviceId)
+    public async Task<ActionResult<DeviceDto>> GetDevice(int deviceId)
     {
         var device = await context.Device
             .Include(x => x.Sensors)
             .FirstOrDefaultAsync(x => x.Id == deviceId);
-
         if (device == null)
         {
             return NotFound();
         }
 
-        return Ok(device);
+        var dto = new DeviceDto
+        {
+            Name = device.Name,
+            Sensors = device.Sensors.Select(s => new DeviceSensorDto { Name = s.Name, Units = s.Units }).ToList()
+        };
+        
+        return Ok(dto);
     }
 
     [HttpGet("all")]
-    public async Task<ActionResult<List<Device>>> GetDevices()
+    public async Task<ActionResult<List<DeviceDto>>> GetDevices()
     {
         var devices = await context.Device.ToListAsync();
 
@@ -33,7 +38,7 @@ public class DevicesController(ApplicationDbContext context, RandomWriteService 
     }
 
     [HttpPost("")]
-    public async Task<ActionResult<Device>> CreateDevice(DeviceDto device)
+    public async Task<ActionResult<DeviceDto>> CreateDevice(DeviceDto device)
     {
         var deviceEntity = new Device
         {
