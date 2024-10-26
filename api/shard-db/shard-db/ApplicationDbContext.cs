@@ -29,6 +29,8 @@ public class Device
     [StringLength(50)]
     [Required]
     public string Name { get; set; } = null!;
+
+    public List<Sensor> Sensors { get; set; } = null!;
 }
 
 public class Sensor
@@ -49,6 +51,8 @@ public class Sensor
 
     [ForeignKey("DeviceId")]
     public Device Device { get; set; } = null!;
+
+    public List<SensorData> SensorDatas { get; set; } = null!;
 }
 
 public class SensorData

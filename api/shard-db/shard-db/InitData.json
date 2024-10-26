@@ -1,0 +1,77 @@
+[
+    {
+        "Name": "DEVICE_1",
+        "Sensors": [
+            {
+                "Name": "SENSOR_1",
+                "Units": "Farenheit"
+            },
+            {
+                "Name": "SENSOR_2",
+                "Units": "Celsius"
+            },
+            {
+                "Name": "SENSOR_3",
+                "Units": "Centimeters"
+            },
+            {
+                "Name": "SENSOR_4",
+                "Units": "Inches"
+            },
+            {
+                "Name": "SENSOR_5",
+                "Units": "Meters"
+            }
+        ]
+    },
+    {
+        "Name": "DEVICE_2",
+        "Sensors": [
+            {
+                "Name": "SENSOR_6",
+                "Units": "Farenheit"
+            },
+            {
+                "Name": "SENSOR_7",
+                "Units": "Celsius"
+            },
+            {
+                "Name": "SENSOR_8",
+                "Units": "Centimeters"
+            },
+            {
+                "Name": "SENSOR_9",
+                "Units": "Inches"
+            },
+            {
+                "Name": "SENSOR_10",
+                "Units": "Meters"
+            }
+        ]
+    },
+    {
+        "Name": "DEVICE_3",
+        "Sensors": [
+            {
+                "Name": "SENSOR_11",
+                "Units": "Farenheit"
+            },
+            {
+                "Name": "SENSOR_12",
+                "Units": "Celsius"
+            },
+            {
+                "Name": "SENSOR_13",
+                "Units": "Centimeters"
+            },
+            {
+                "Name": "SENSOR_14",
+                "Units": "Inches"
+            },
+            {
+                "Name": "SENSOR_15",
+                "Units": "Meters"
+            }
+        ]
+    }
+]
