@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace shard_db.controllers;
 
-[ApiController]
 [Route("[controller]")]
+[ApiController]
 public class DevicesController(ApplicationDbContext context) : ControllerBase
 {
-    [HttpGet("/{deviceId}")]
+    [HttpGet("{deviceId}")]
     public async Task<ActionResult<Device>> GetDevice(int deviceId)
     {
         var device = await context.Device.FindAsync(deviceId);
@@ -20,7 +20,7 @@ public class DevicesController(ApplicationDbContext context) : ControllerBase
         return Ok(device);
     }
 
-    [HttpGet("/all")]
+    [HttpGet("all")]
     public async Task<ActionResult<List<Device>>> GetDevices()
     {
         var devices = await context.Device.ToListAsync();
@@ -28,7 +28,7 @@ public class DevicesController(ApplicationDbContext context) : ControllerBase
         return Ok(devices);
     }
 
-    [HttpPost("/")]
+    [HttpPost("")]
     public async Task<ActionResult<Device>> CreateDevice(Device device)
     {
         context.Device.Add(device);
@@ -37,7 +37,7 @@ public class DevicesController(ApplicationDbContext context) : ControllerBase
         return CreatedAtAction(nameof(GetDevice), new { deviceId = device.Id }, device);
     }
 
-    [HttpPut("/{deviceId:int}")]
+    [HttpPut("{deviceId:int}")]
     public async Task<ActionResult> UpdateDevice(int deviceId, Device updatedDevice)
     {
         var device = await context.Device.FindAsync(deviceId);
@@ -53,7 +53,7 @@ public class DevicesController(ApplicationDbContext context) : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("/{deviceId:int}")]
+    [HttpDelete("{deviceId:int}")]
     public async Task<ActionResult> DeleteDevice(int deviceId)
     {
         var device = await context.Device.FindAsync(deviceId);
