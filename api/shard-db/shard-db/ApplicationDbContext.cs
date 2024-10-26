@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 public class ApplicationDbContext : DbContext
@@ -20,45 +22,96 @@ public class ApplicationDbContext : DbContext
 
 public class Device
 {
+    [Key]
     public int Id { get; set; }
+
+    [StringLength(50)]
+    [Required]
     public string Name { get; set; } = null!;
 }
 
 public class Sensor
 {
+    [Key]
     public int Id { get; set; }
+
+    [Required]
     public int DeviceId { get; set; }
+
+    [StringLength(50)]
+    [Required]
     public string Name { get; set; } = null!;
+
+    [StringLength(10)]
+    [Required]
     public string Units { get; set; } = null!;
+
+    [ForeignKey("DeviceId")]
+    public Device Device { get; set; } = null!;
 }
 
 public class SensorData
 {
+    [Key]
     public int Id { get; set; }
+
+    [Required]
     public int SensorId { get; set; }
+
+    [Required]
     public DateTime ReceivedTimestamp { get; set; }
+
+    [Required]
     public double Value { get; set; }
+
+    [ForeignKey("SensorId")]
+    public Sensor Sensor { get; set; } = null!;
 }
 
 public class QueryLog
 {
+    [Key]
     public int Id { get; set; }
+
+    [Required]
     public int FragmentId { get; set; }
+
+    [Required]
     public int SiteId { get; set; }
+
+    [Required]
     public DateTime AccessDate { get; set; }
+
+    [Required]
     public DATA_TYPE DataType { get; set; }
+
+    [Required]
     public int DataVolume { get; set; }     // Amount of data transferred with the request, in bytes
+
+    [ForeignKey("FragmentId")]
+    public Fragment Fragment { get; set; } = null!;
+
+    [ForeignKey("SiteId")]
+    public Site Site { get; set; } = null!;
 }
 
 public class Fragment
 {
+    [Key]
     public int Id { get; set; }
     public int SiteId { get; set; }
+
+    [ForeignKey("SiteId")]
+    public Site site { get; set; } = null!;
 }
 
 public class Site
 {
+    [Key]
     public int Id { get; set; }
+
+    [StringLength(50)]
+    [Required]
     public string Name { get; set; } = null!;
 }
 
