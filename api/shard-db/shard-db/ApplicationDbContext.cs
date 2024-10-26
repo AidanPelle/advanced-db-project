@@ -34,3 +34,18 @@ public class SensorData
     public DateTime ReceivedTimestamp { get; set; }
     public double Value { get; set; }
 }
+
+public class QueryLog
+{
+    public int FragmentId { get; set; }
+    public int SiteId { get; set; }
+    public DateTime AccessDate { get; set; }
+    public DATA_TYPE DataType { get; set; }
+    public int DataVolume { get; set; }     // Amount of data transferred with the request, in bytes
+}
+
+public enum DATA_TYPE
+{
+    READ,
+    WRITE
+}
