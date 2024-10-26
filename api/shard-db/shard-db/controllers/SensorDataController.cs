@@ -22,32 +22,64 @@ public class SensorDataController(ApplicationDbContext context) : ControllerBase
         var data = await context.SensorData.Where(sd => sd.SensorId == sensorId).ToListAsync();
         return Ok(data);
     }
+    
+    public async Task<ActionResult> GetDataPointById(int id)
+    {
+        var data = await context.SensorData.FindAsync(id);
+        if (data == null)
+        {
+            return NotFound();
+        }
+        
+        return Ok(data);
+    }
 
     [HttpPost("{id:int}")]
     public async Task<ActionResult> CreateSensorData([FromBody] DataPointDto dataPoint)
     {
-        var sd = new SensorData
+        var sensorData = new SensorData
         {
             SensorId = dataPoint.SensorId,
             ReceivedTimestamp = dataPoint.ReceivedTimestamp,
             Value = dataPoint.Value
         };
-
-        // TODO: Implement method to create new sensor data
-        return CreatedAtAction(nameof(GetSensorDataBySensorId), new { id = 1 }, "CreateSensorData");
+        
+        await context.SensorData.AddAsync(sensorData);
+        await context.SaveChangesAsync();
+        
+        return CreatedAtAction(nameof(GetDataPointById), new { id = sensorData.Id }, "CreateSensorData");
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateSensorData(int id, [FromBody] object sensorData)
+    public async Task<ActionResult> UpdateSensorData(int id, [FromBody] DataPointDto dataPoint)
     {
-        // TODO: Implement method to update existing sensor data
+        var sensorData = await context.SensorData.FindAsync(id);
+
+        if (sensorData == null)
+        {
+            return NotFound();
+        }
+        
+        sensorData.ReceivedTimestamp = dataPoint.ReceivedTimestamp;
+        sensorData.Value = dataPoint.Value;
+        
+        await context.SaveChangesAsync();
+        
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteSensorData(int id)
     {
-        // TODO: Implement method to delete sensor data by ID
+        var sensorData = await context.SensorData.FindAsync(id);
+
+        if (sensorData == null)
+        {
+            return NotFound();
+        }
+        
+        context.SensorData.Remove(sensorData);
+        await context.SaveChangesAsync();
         return NoContent();
     }
 
