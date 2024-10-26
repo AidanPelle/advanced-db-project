@@ -7,10 +7,15 @@ public class ApplicationDbContext : DbContext
     {
     }
 
-    // Define DbSets for your entities
     public DbSet<Device> Device { get; set; }
     public DbSet<Sensor> Sensor { get; set; }
     public DbSet<SensorData> SensorData { get; set; }
+
+
+    // Metadata for controlling data locations
+    public DbSet<QueryLog> QueryLog { get; set; }
+    public DbSet<Fragment> Fragment { get; set; }
+    public DbSet<Site> Site { get; set; }
 }
 
 public class Device
@@ -42,6 +47,18 @@ public class QueryLog
     public DateTime AccessDate { get; set; }
     public DATA_TYPE DataType { get; set; }
     public int DataVolume { get; set; }     // Amount of data transferred with the request, in bytes
+}
+
+public class Fragment
+{
+    public int Id { get; set; }
+    public int SiteId { get; set; }
+}
+
+public class Site
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = null!;
 }
 
 public enum DATA_TYPE
