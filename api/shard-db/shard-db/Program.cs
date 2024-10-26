@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using shard_db;
+using shard_db.services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseSqlite("Data Source=database.db");
 });
+
+builder.Services.AddSingleton<RandomWriteService>();
 
 var app = builder.Build();
 
