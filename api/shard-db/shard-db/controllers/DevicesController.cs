@@ -12,7 +12,9 @@ public class DevicesController(ApplicationDbContext context, RandomWriteService 
     [HttpGet("{deviceId}")]
     public async Task<ActionResult<Device>> GetDevice(int deviceId)
     {
-        var device = await context.Device.FindAsync(deviceId);
+        var device = await context.Device
+            .Include(x => x.Sensors)
+            .FirstOrDefaultAsync(x => x.Id == deviceId);
 
         if (device == null)
         {
