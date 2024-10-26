@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using shard_db.services;
 using shard_db.dto;
 
 namespace shard_db.controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class DevicesController(ApplicationDbContext context) : ControllerBase
+public class DevicesController(ApplicationDbContext context, RandomWriteService randomWriteService) : ControllerBase
 {
     [HttpGet("{deviceId}")]
     public async Task<ActionResult<Device>> GetDevice(int deviceId)
@@ -56,6 +57,14 @@ public class DevicesController(ApplicationDbContext context) : ControllerBase
 
         device.Name = updatedDevice.Name;
         await context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    [HttpPut("{deviceId:int}/frequency/{frequencyValue:int}")]
+    public async Task<ActionResult> UpdateDeviceFrequency(int deviceId, int frequencyValue)
+    {
+        randomWriteService.SetWriteFrequency(deviceId, frequencyValue);
 
         return NoContent();
     }
