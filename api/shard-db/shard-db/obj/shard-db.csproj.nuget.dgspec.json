@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Brett\\RiderProjects\\advanced-db-project\\api\\shard-db\\shard-db\\shard-db.csproj": {}
+    "C:\\Users\\redha\\advanced-db-project\\api\\shard-db\\shard-db\\shard-db.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Brett\\RiderProjects\\advanced-db-project\\api\\shard-db\\shard-db\\shard-db.csproj": {
+    "C:\\Users\\redha\\advanced-db-project\\api\\shard-db\\shard-db\\shard-db.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Brett\\RiderProjects\\advanced-db-project\\api\\shard-db\\shard-db\\shard-db.csproj",
+        "projectUniqueName": "C:\\Users\\redha\\advanced-db-project\\api\\shard-db\\shard-db\\shard-db.csproj",
         "projectName": "shard-db",
-        "projectPath": "C:\\Users\\Brett\\RiderProjects\\advanced-db-project\\api\\shard-db\\shard-db\\shard-db.csproj",
-        "packagesPath": "C:\\Users\\Brett\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Brett\\RiderProjects\\advanced-db-project\\api\\shard-db\\shard-db\\obj\\",
+        "projectPath": "C:\\Users\\redha\\advanced-db-project\\api\\shard-db\\shard-db\\shard-db.csproj",
+        "packagesPath": "C:\\Users\\redha\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\redha\\advanced-db-project\\api\\shard-db\\shard-db\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Brett\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\redha\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
