@@ -4,6 +4,8 @@ using shard_db;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
+
 builder.Services.AddDbContext<ApplicationDbContext>(options => {
     options.UseSqlite("Data Source=database.db");
 });
@@ -29,6 +31,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-app.UseHttpsRedirection();
+app.MapControllers();
 
 app.Run();
