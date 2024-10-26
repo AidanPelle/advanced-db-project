@@ -10,6 +10,11 @@ public class ApplicationDbContext : DbContext
     {
     }
 
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<SensorData>().HasAlternateKey(sd => new { sd.SensorId, sd.ReceivedTimestamp });
+    }
+
     public DbSet<Device> Device { get; set; }
     public DbSet<Sensor> Sensor { get; set; }
     public DbSet<SensorData> SensorData { get; set; }
