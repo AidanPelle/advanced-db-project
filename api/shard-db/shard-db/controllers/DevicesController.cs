@@ -22,6 +22,7 @@ public class DevicesController(ApplicationDbContext context, RandomWriteService 
 
         var dto = new DeviceDto
         {
+            Id = device.Id,
             Name = device.Name,
             Sensors = device.Sensors.Select(s => new DeviceSensorDto { Name = s.Name, Units = s.Units }).ToList()
         };
