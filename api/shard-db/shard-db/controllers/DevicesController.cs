@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using shard_db.dto;
 
 namespace shard_db.controllers;
 
@@ -29,15 +30,21 @@ public class DevicesController(ApplicationDbContext context) : ControllerBase
     }
 
     [HttpPost("")]
-    public async Task<ActionResult<Device>> CreateDevice(Device device)
+    public async Task<ActionResult<Device>> CreateDevice(DeviceDto device)
     {
-        context.Device.Add(device);
+        var deviceEntity = new Device
+        {
+            Name = device.Name,
+            Sensors = device.Sensors.Select(sensor => new Sensor { Name = sensor.Name, Units = sensor.Units }).ToList()
+        };
+        
+        await context.Device.AddAsync(deviceEntity);
         await context.SaveChangesAsync();
 
-        return CreatedAtAction(nameof(GetDevice), new { deviceId = device.Id }, device);
+        return CreatedAtAction(nameof(GetDevice), new { deviceId = deviceEntity.Id }, device);
     }
 
-    [HttpPut("{deviceId:int}")]
+    [HttpPatch("{deviceId:int}")]
     public async Task<ActionResult> UpdateDevice(int deviceId, Device updatedDevice)
     {
         var device = await context.Device.FindAsync(deviceId);
