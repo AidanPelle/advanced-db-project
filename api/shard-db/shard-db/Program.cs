@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using shard_db;
 
 var builder = WebApplication.CreateBuilder(args);
 
