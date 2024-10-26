@@ -1,4 +1,5 @@
 *.cache
 *.editorconfig
+*.db*
 bin/
 obj/

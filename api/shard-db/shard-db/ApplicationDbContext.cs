@@ -42,6 +42,7 @@ public class SensorData
 
 public class QueryLog
 {
+    public int Id { get; set; }
     public int FragmentId { get; set; }
     public int SiteId { get; set; }
     public DateTime AccessDate { get; set; }
