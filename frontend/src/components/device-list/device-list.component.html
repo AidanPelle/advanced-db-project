@@ -1,0 +1,7 @@
+Devices:
+
+@for ( item of deviceList; track item.id) {
+    <div>Device ID: {{item.id}}</div>
+    <div>Device Name: {{item.name}}</div>
+    <button (click)="navToDevice(item.id)">Nav to device</button>>
+}

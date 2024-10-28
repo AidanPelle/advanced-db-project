@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using shard_db.services;
 
 namespace shard_db.controllers;
 
 [Route("[controller]")]
+[EnableCors("AllowAll")]
 [ApiController]
 public class DevicesController(ApplicationDbContext context, RandomWriteService randomWriteService) : ControllerBase
 {
@@ -55,7 +57,7 @@ public class DevicesController(ApplicationDbContext context, RandomWriteService 
     }
 
     [HttpPut("{deviceId:int}/frequency/{frequencyValue:int}")]
-    public async Task<ActionResult> UpdateDeviceFrequency(int deviceId, int frequencyValue)
+    public ActionResult UpdateDeviceFrequency(int deviceId, int frequencyValue)
     {
         randomWriteService.SetWriteFrequency(deviceId, frequencyValue);
 

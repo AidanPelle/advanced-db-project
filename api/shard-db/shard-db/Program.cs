@@ -13,7 +13,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => {
 
 builder.Services.AddSingleton<RandomWriteService>();
 
+builder.Services.AddCors(options => options.AddPolicy("AllowAll", p => { p.AllowAnyOrigin(); p.AllowAnyMethod(); p.AllowAnyHeader().WithExposedHeaders("content-disposition"); })); //allow CORS services
+
 var app = builder.Build();
+app.UseCors();
 
 using (var scope = app.Services.CreateScope())
 {

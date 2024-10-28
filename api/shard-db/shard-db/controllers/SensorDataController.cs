@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using shard_db.dto;
 
@@ -6,6 +7,7 @@ namespace shard_db.controllers;
 
 
 [Route("[controller]")]
+[EnableCors("AllowAll")]
 [ApiController]
 public class SensorDataController(ApplicationDbContext context) : ControllerBase
 {
