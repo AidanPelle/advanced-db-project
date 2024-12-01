@@ -23,22 +23,29 @@ public class DeviceDbContext : DbContext
 public class Device
 {
     [Key]
-    public int Id { get; set; }
+    [MinLength(36)]
+    [MaxLength(36)]
+    public string Id { get; set; } = string.Empty;
 
     [StringLength(50)]
     [Required]
     public string Name { get; set; } = null!;
 
+    [NotMapped]
     public List<Sensor> Sensors { get; set; } = null!;
 }
 
 public class Sensor
 {
     [Key]
-    public int Id { get; set; }
+    [MinLength(36)]
+    [MaxLength(36)]
+    public string Id { get; set; } = string.Empty;
 
-    [Required]
-    public int DeviceId { get; set; }
+    [Required] 
+    [MinLength(36)]
+    [MaxLength(36)]
+    public string DeviceId { get; set; } = string.Empty;
 
     [StringLength(50)]
     [Required]
@@ -59,8 +66,8 @@ public class SensorData
     [Key]
     public int Id { get; set; }
 
-    [Required]
-    public int SensorId { get; set; }
+    [Required] 
+    public string SensorId { get; set; } = string.Empty;
 
     [Required]
     public DateTime ReceivedTimestamp { get; set; }

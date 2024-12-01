@@ -10,7 +10,12 @@ public class BookKeepingDbContext : DbContext
         : base(options)
     {
     }
-    
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<SiteDevice>().HasKey(sd => new { sd.SiteId, sd.DeviceId });
+    }
+
     public DbSet<QueryLog> QueryLog { get; set; } = null!;
     public DbSet<Site> Site { get; set; } = null!;
     public DbSet<SiteDevice> SiteDevice { get; set; } = null!;
@@ -56,8 +61,7 @@ public class Site
 public class SiteDevice
 {
     public int SiteId { get; set; }
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int DeviceId { get; set; }
+    public string DeviceId { get; set; } = string.Empty;
 }
 
 public enum DATA_TYPE

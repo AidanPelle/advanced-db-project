@@ -12,7 +12,7 @@ namespace shard_db.controllers;
 public class DevicesController(DatabaseManager context, RandomWriteService randomWriteService) : ControllerBase
 {
     [HttpGet("{deviceId}")]
-    public async Task<ActionResult<DeviceDto>> GetDevice(int deviceId)
+    public async Task<ActionResult<DeviceDto>> GetDevice(string deviceId)
     {
         var device = await context.DeviceDbContexts[0].Device
             .Include(x => x.Sensors)
@@ -56,7 +56,7 @@ public class DevicesController(DatabaseManager context, RandomWriteService rando
     }
 
     [HttpPatch("{deviceId:int}")]
-    public async Task<ActionResult> UpdateDevice(int deviceId, Device updatedDevice)
+    public async Task<ActionResult> UpdateDevice(string deviceId, Device updatedDevice)
     {
         var device = await context.DeviceDbContexts[0].Device.FindAsync(deviceId);
 
@@ -72,7 +72,7 @@ public class DevicesController(DatabaseManager context, RandomWriteService rando
     }
 
     [HttpPut("{deviceId:int}/frequency/{frequencyValue:int}")]
-    public ActionResult UpdateDeviceFrequency(int deviceId, int frequencyValue)
+    public ActionResult UpdateDeviceFrequency(string deviceId, int frequencyValue)
     {
         randomWriteService.SetWriteFrequency(deviceId, frequencyValue);
 
@@ -80,7 +80,7 @@ public class DevicesController(DatabaseManager context, RandomWriteService rando
     }
 
     [HttpDelete("{deviceId:int}")]
-    public async Task<ActionResult> DeleteDevice(int deviceId)
+    public async Task<ActionResult> DeleteDevice(string deviceId)
     {
         var device = await context.DeviceDbContexts[0].Device.FindAsync(deviceId);
 

@@ -20,7 +20,7 @@ public class RandomWriteService
         _ = InitWrites();
     }
 
-    public void SetWriteFrequency(int deviceId, int frequencyValue)
+    public void SetWriteFrequency(string deviceId, int frequencyValue)
     {
         var device = frequencies.First(f => f.Device.Id == deviceId);
         if (device != null)

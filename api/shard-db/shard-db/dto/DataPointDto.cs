@@ -2,7 +2,7 @@
 
 public class DataPointDto
 {
-    public int SensorId { get; set; }
+    public string SensorId { get; set; } = null!;
     public DateTime ReceivedTimestamp { get; set; }
     public double Value { get; set; }
 }

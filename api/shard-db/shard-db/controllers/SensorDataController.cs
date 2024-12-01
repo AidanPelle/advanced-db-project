@@ -18,14 +18,14 @@ public class SensorDataController(DatabaseManager context) : ControllerBase
         return Ok(data);
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<ActionResult> GetSensorDataBySensorId(int sensorId)
+    [HttpGet("{sensorId}")]
+    public async Task<ActionResult> GetSensorDataBySensorId(string sensorId)
     {
         var data = await context.DeviceDbContexts[0].SensorData.Where(sd => sd.SensorId == sensorId).ToListAsync();
         return Ok(data);
     }
     
-    public async Task<ActionResult> GetDataPointById(int id)
+    public async Task<ActionResult> GetDataPointById(string id)
     {
         var data = await context.DeviceDbContexts[0].SensorData.FindAsync(id);
         if (data == null)
@@ -36,7 +36,7 @@ public class SensorDataController(DatabaseManager context) : ControllerBase
         return Ok(data);
     }
 
-    [HttpPost("{id:int}")]
+    [HttpPost]
     public async Task<ActionResult> CreateSensorData([FromBody] DataPointDto dataPoint)
     {
         var sensorData = new SensorData
@@ -53,7 +53,7 @@ public class SensorDataController(DatabaseManager context) : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> UpdateSensorData(int id, [FromBody] DataPointDto dataPoint)
+    public async Task<ActionResult> UpdateSensorData(string id, [FromBody] DataPointDto dataPoint)
     {
         var sensorData = await context.DeviceDbContexts[0].SensorData.FindAsync(id);
 
@@ -71,7 +71,7 @@ public class SensorDataController(DatabaseManager context) : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteSensorData(int id)
+    public async Task<ActionResult> DeleteSensorData(string id)
     {
         var sensorData = await context.DeviceDbContexts[0].SensorData.FindAsync(id);
 

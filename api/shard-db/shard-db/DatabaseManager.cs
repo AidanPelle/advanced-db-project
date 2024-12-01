@@ -8,34 +8,64 @@ public class DatabaseManager
 {
     public DatabaseManager()
     {
-            var jsonData = File.ReadAllText("./AppConf.json");
-            var deSerializeOptions = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            var sites = JsonSerializer.Deserialize<List<SiteDto>>(jsonData, deSerializeOptions)!;
+        var jsonData = File.ReadAllText("./AppConf.json");
+        var deSerializeOptions = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+        var sites = JsonSerializer.Deserialize<List<SiteDto>>(jsonData, deSerializeOptions)!;
 
-            var bkDbContextOptionsBuilder = new DbContextOptionsBuilder<BookKeepingDbContext>();
-            bkDbContextOptionsBuilder.UseSqlite("Data Source=./databases/BookKeeping.db");
-            BookKeepingDbContext = new BookKeepingDbContext(bkDbContextOptionsBuilder.Options);
-            BookKeepingDbContext.Database.EnsureCreated();
-            // BookKeepingDbContext.Database.Migrate();
+        var bkDbContextOptionsBuilder = new DbContextOptionsBuilder<BookKeepingDbContext>();
+        bkDbContextOptionsBuilder.UseSqlite("Data Source=./databases/BookKeeping.db");
+        
+        BookKeepingDbContext = new BookKeepingDbContext(bkDbContextOptionsBuilder.Options);
+        BookKeepingDbContext.Database.EnsureDeleted();
+        BookKeepingDbContext.Database.EnsureCreated();
+        // BookKeepingDbContext.Database.Migrate();
             
-            foreach (var site in sites)
-            {
-                var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
-                deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{site.Name}.db");
-                var deviceContext = new DeviceDbContext(deviceDbOptionsBuilder.Options);
-                deviceContext.Database.EnsureCreated();
-                DeviceDbContexts.Add(deviceContext);
+        foreach (var siteModel in sites)
+        {
+            var site = new Site();
+            site.Name = siteModel.Name;
+            BookKeepingDbContext.Add(site);
+            BookKeepingDbContext.SaveChanges();
+            
+            var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
+            deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{siteModel.Name}.db");
+            var deviceContext = new DeviceDbContext(deviceDbOptionsBuilder.Options);
+            deviceContext.Database.EnsureDeleted();
+            deviceContext.Database.EnsureCreated();
+            DeviceDbContexts.Add(deviceContext);
 
-                foreach (var deviceModel in site.Devices)
-                {
-                    var device = new Device();
+            foreach (var deviceModel in siteModel.Devices)
+            {
+                var device = new Device();
+                device.Id = Guid.NewGuid().ToString();
+                device.Name = deviceModel.Name;
+                var context = DeviceDbContexts.Last();
+                context.Device.Add(device);
                     
-                    // DeviceDbContexts.Last().Device
+                foreach (var sensorModel in deviceModel.Sensors)
+                {
+                    var sensor = new Sensor
+                    {
+                        Id = Guid.NewGuid().ToString(), 
+                        Name = sensorModel.Name, 
+                        DeviceId = device.Id, 
+                        Units = sensorModel.Units
+                    };
+                    context.Sensor.Add(sensor);
                 }
+                
+                var siteDevice = new SiteDevice();
+                siteDevice.SiteId = site.Id;
+                siteDevice.DeviceId = device.Id;
+                BookKeepingDbContext.Add(siteDevice);
+                BookKeepingDbContext.SaveChanges();
             }
+            
+            deviceContext.SaveChanges();
+        }
     }
     
     public BookKeepingDbContext BookKeepingDbContext { get; set; }
