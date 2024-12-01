@@ -9,25 +9,25 @@ namespace shard_db.controllers;
 [Route("[controller]")]
 [EnableCors("AllowAll")]
 [ApiController]
-public class SensorDataController(ApplicationDbContext context) : ControllerBase
+public class SensorDataController(DatabaseManager context) : ControllerBase
 {
     [HttpGet("all")]
     public async Task<ActionResult<List<SensorData>>> GetAllSensorData()
     {
-        var data = await context.SensorData.ToListAsync();
+        var data = await context.DeviceDbContexts[0].SensorData.ToListAsync();
         return Ok(data);
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult> GetSensorDataBySensorId(int sensorId)
     {
-        var data = await context.SensorData.Where(sd => sd.SensorId == sensorId).ToListAsync();
+        var data = await context.DeviceDbContexts[0].SensorData.Where(sd => sd.SensorId == sensorId).ToListAsync();
         return Ok(data);
     }
     
     public async Task<ActionResult> GetDataPointById(int id)
     {
-        var data = await context.SensorData.FindAsync(id);
+        var data = await context.DeviceDbContexts[0].SensorData.FindAsync(id);
         if (data == null)
         {
             return NotFound();
@@ -46,8 +46,8 @@ public class SensorDataController(ApplicationDbContext context) : ControllerBase
             Value = dataPoint.Value
         };
         
-        await context.SensorData.AddAsync(sensorData);
-        await context.SaveChangesAsync();
+        await context.DeviceDbContexts[0].SensorData.AddAsync(sensorData);
+        await context.DeviceDbContexts[0].SaveChangesAsync();
         
         return CreatedAtAction(nameof(GetDataPointById), new { id = sensorData.Id }, "CreateSensorData");
     }
@@ -55,7 +55,7 @@ public class SensorDataController(ApplicationDbContext context) : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> UpdateSensorData(int id, [FromBody] DataPointDto dataPoint)
     {
-        var sensorData = await context.SensorData.FindAsync(id);
+        var sensorData = await context.DeviceDbContexts[0].SensorData.FindAsync(id);
 
         if (sensorData == null)
         {
@@ -65,7 +65,7 @@ public class SensorDataController(ApplicationDbContext context) : ControllerBase
         sensorData.ReceivedTimestamp = dataPoint.ReceivedTimestamp;
         sensorData.Value = dataPoint.Value;
         
-        await context.SaveChangesAsync();
+        await context.DeviceDbContexts[0].SaveChangesAsync();
         
         return NoContent();
     }
@@ -73,15 +73,15 @@ public class SensorDataController(ApplicationDbContext context) : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteSensorData(int id)
     {
-        var sensorData = await context.SensorData.FindAsync(id);
+        var sensorData = await context.DeviceDbContexts[0].SensorData.FindAsync(id);
 
         if (sensorData == null)
         {
             return NotFound();
         }
         
-        context.SensorData.Remove(sensorData);
-        await context.SaveChangesAsync();
+        context.DeviceDbContexts[0].SensorData.Remove(sensorData);
+        await context.DeviceDbContexts[0].SaveChangesAsync();
         return NoContent();
     }
 

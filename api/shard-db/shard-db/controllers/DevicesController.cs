@@ -9,12 +9,12 @@ namespace shard_db.controllers;
 [Route("[controller]")]
 [EnableCors("AllowAll")]
 [ApiController]
-public class DevicesController(ApplicationDbContext context, RandomWriteService randomWriteService) : ControllerBase
+public class DevicesController(DatabaseManager context, RandomWriteService randomWriteService) : ControllerBase
 {
     [HttpGet("{deviceId}")]
     public async Task<ActionResult<DeviceDto>> GetDevice(int deviceId)
     {
-        var device = await context.Device
+        var device = await context.DeviceDbContexts[0].Device
             .Include(x => x.Sensors)
             .FirstOrDefaultAsync(x => x.Id == deviceId);
         if (device == null)
@@ -35,7 +35,7 @@ public class DevicesController(ApplicationDbContext context, RandomWriteService 
     [HttpGet("all")]
     public async Task<ActionResult<List<DeviceDto>>> GetDevices()
     {
-        var devices = await context.Device.ToListAsync();
+        var devices = await context.DeviceDbContexts[0].Device.ToListAsync();
 
         return Ok(devices);
     }
@@ -49,8 +49,8 @@ public class DevicesController(ApplicationDbContext context, RandomWriteService 
             Sensors = device.Sensors.Select(sensor => new Sensor { Name = sensor.Name, Units = sensor.Units }).ToList()
         };
         
-        await context.Device.AddAsync(deviceEntity);
-        await context.SaveChangesAsync();
+        await context.DeviceDbContexts[0].Device.AddAsync(deviceEntity);
+        await context.DeviceDbContexts[0].SaveChangesAsync();
 
         return CreatedAtAction(nameof(GetDevice), new { deviceId = deviceEntity.Id }, device);
     }
@@ -58,7 +58,7 @@ public class DevicesController(ApplicationDbContext context, RandomWriteService 
     [HttpPatch("{deviceId:int}")]
     public async Task<ActionResult> UpdateDevice(int deviceId, Device updatedDevice)
     {
-        var device = await context.Device.FindAsync(deviceId);
+        var device = await context.DeviceDbContexts[0].Device.FindAsync(deviceId);
 
         if (device == null)
         {
@@ -66,7 +66,7 @@ public class DevicesController(ApplicationDbContext context, RandomWriteService 
         }
 
         device.Name = updatedDevice.Name;
-        await context.SaveChangesAsync();
+        await context.DeviceDbContexts[0].SaveChangesAsync();
 
         return NoContent();
     }
@@ -82,15 +82,15 @@ public class DevicesController(ApplicationDbContext context, RandomWriteService 
     [HttpDelete("{deviceId:int}")]
     public async Task<ActionResult> DeleteDevice(int deviceId)
     {
-        var device = await context.Device.FindAsync(deviceId);
+        var device = await context.DeviceDbContexts[0].Device.FindAsync(deviceId);
 
         if (device == null)
         {
             return NotFound();
         } 
 
-        context.Device.Remove(device);
-        await context.SaveChangesAsync();
+        context.DeviceDbContexts[0].Device.Remove(device);
+        await context.DeviceDbContexts[0].SaveChangesAsync();
 
         return NoContent();
     }
