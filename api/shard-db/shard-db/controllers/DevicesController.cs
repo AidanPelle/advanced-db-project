@@ -33,9 +33,9 @@ public class DevicesController(DatabaseManager context, RandomWriteService rando
     }
 
     [HttpGet("all")]
-    public async Task<ActionResult<List<DeviceDto>>> GetDevices()
+    public ActionResult<List<DeviceDto>> GetDevices()
     {
-        var devices = await context.DeviceDbContexts[0].Device.ToListAsync();
+        var devices = context.DeviceDbContexts.Select(d => d.Device.ToList()).ToList();
 
         return Ok(devices);
     }
