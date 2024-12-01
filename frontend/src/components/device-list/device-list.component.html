@@ -1,7 +1,10 @@
 Devices:
-
+<div style="display: flex; flex-direction: column; gap: 30px; width: 200px;">
 @for ( item of deviceList; track item.id) {
-    <div>Device ID: {{item.id}}</div>
-    <div>Device Name: {{item.name}}</div>
-    <button (click)="navToDevice(item.id)">Nav to device</button>>
+    <div>
+        <div>Device ID: {{item.id}}</div>
+        <div>Device Name: {{item.name}}</div>
+        <button (click)="navToDevice(item.id)">Nav to device</button>
+    </div>
 }
+</div>
