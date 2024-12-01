@@ -9,10 +9,14 @@ public class DatabaseManager
     public DatabaseManager()
     {
             var jsonData = File.ReadAllText("./AppConf.json");
-            var sites = JsonSerializer.Deserialize<List<SiteDto>>(jsonData)!;
+            var deSerializeOptions = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            var sites = JsonSerializer.Deserialize<List<SiteDto>>(jsonData, deSerializeOptions)!;
 
             var bkDbContextOptionsBuilder = new DbContextOptionsBuilder<BookKeepingDbContext>();
-            bkDbContextOptionsBuilder.UseSqlite("Data Source=./BookKeeping.db");
+            bkDbContextOptionsBuilder.UseSqlite("Data Source=./databases/BookKeeping.db");
             BookKeepingDbContext = new BookKeepingDbContext(bkDbContextOptionsBuilder.Options);
             BookKeepingDbContext.Database.EnsureCreated();
             // BookKeepingDbContext.Database.Migrate();
@@ -20,8 +24,10 @@ public class DatabaseManager
             foreach (var site in sites)
             {
                 var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
-                deviceDbOptionsBuilder.UseSqlite($"Data Source={site.Name}.db");
-                DeviceDbContexts.Add(new DeviceDbContext(deviceDbOptionsBuilder.Options));
+                deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{site.Name}.db");
+                var deviceContext = new DeviceDbContext(deviceDbOptionsBuilder.Options);
+                deviceContext.Database.EnsureCreated();
+                DeviceDbContexts.Add(deviceContext);
 
                 foreach (var deviceModel in site.Devices)
                 {
