@@ -55,7 +55,7 @@ public class DevicesController(DatabaseManager context, RandomWriteService rando
         return CreatedAtAction(nameof(GetDevice), new { deviceId = deviceEntity.Id }, device);
     }
 
-    [HttpPatch("{deviceId:int}")]
+    [HttpPatch("{deviceId}")]
     public async Task<ActionResult> UpdateDevice(string deviceId, Device updatedDevice)
     {
         var device = await context.DeviceDbContexts[0].Device.FindAsync(deviceId);
@@ -71,7 +71,7 @@ public class DevicesController(DatabaseManager context, RandomWriteService rando
         return NoContent();
     }
 
-    [HttpPut("{deviceId:int}/frequency/{frequencyValue:int}")]
+    [HttpPut("{deviceId}/frequency/{frequencyValue:int}")]
     public ActionResult UpdateDeviceFrequency(string deviceId, int frequencyValue)
     {
         randomWriteService.SetWriteFrequency(deviceId, frequencyValue);
@@ -79,7 +79,7 @@ public class DevicesController(DatabaseManager context, RandomWriteService rando
         return NoContent();
     }
 
-    [HttpDelete("{deviceId:int}")]
+    [HttpDelete("{deviceId}")]
     public async Task<ActionResult> DeleteDevice(string deviceId)
     {
         var device = await context.DeviceDbContexts[0].Device.FindAsync(deviceId);
