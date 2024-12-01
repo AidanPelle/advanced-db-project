@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 
 namespace shard_db;
@@ -31,7 +32,7 @@ public class Device
     [Required]
     public string Name { get; set; } = null!;
 
-    [NotMapped]
+    [JsonIgnore]
     public List<Sensor> Sensors { get; set; } = null!;
 }
 
@@ -55,6 +56,7 @@ public class Sensor
     [Required]
     public string Units { get; set; } = null!;
 
+    [JsonIgnore]
     [ForeignKey("DeviceId")]
     public Device Device { get; set; } = null!;
 

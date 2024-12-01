@@ -35,7 +35,7 @@ public class DevicesController(DatabaseManager context, RandomWriteService rando
     [HttpGet("all")]
     public ActionResult<List<DeviceDto>> GetDevices()
     {
-        var devices = context.DeviceDbContexts.Select(d => d.Device.ToList()).ToList();
+        var devices = context.DeviceDbContexts.SelectMany(d => d.Device.ToList()).ToList();
 
         return Ok(devices);
     }

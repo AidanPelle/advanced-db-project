@@ -6,6 +6,7 @@ public class RandomWriteService
 {
     public class WriteFrequency
     {
+        public Site Site { get; set; } = null!;
         public Device Device { get; set; } = null!;
         public DeviceDbContext Context { get; set; } = null!;
         public int FrequencyValue { get; set; }     // The time between writes for a device, in milliseconds
@@ -46,17 +47,18 @@ public class RandomWriteService
         {
             var context = scope.ServiceProvider.GetRequiredService<DatabaseManager>();
             var frequencies = new List<WriteFrequency>();
-            foreach(var deviceContext in context.DeviceDbContexts) {
-                var list = await deviceContext.Device.Include(d => d.Sensors).ToListAsync();
-                var formattedList = list.Select(l => new WriteFrequency{Device = l, FrequencyValue = 1000, Context = deviceContext});
-                frequencies.AddRange(formattedList);
+                foreach(var site in context.BookKeepingDbContext.Site) {
+                    foreach(var deviceContext in context.DeviceDbContexts) {
+                    var list = await deviceContext.Device.Include(d => d.Sensors).ToListAsync();
+                    var formattedList = list.Select(l => new WriteFrequency{Device = l, Site = site, FrequencyValue = 1000, Context = deviceContext});
+                    frequencies.AddRange(formattedList);
+                }
             }
         }
     }
 
     private async void WriteLoop(WriteFrequency frequency)
     {
-        var sensorData = new List<SensorData>();
         foreach (var sensor in frequency.Device.Sensors)
         {
             var data = new SensorData
@@ -65,13 +67,8 @@ public class RandomWriteService
                 ReceivedTimestamp = DateTime.UtcNow,
                 Value = random.NextDouble() * 1000,
             };
-            sensorData.Add(data);
-        }
-        using (var scope = _serviceProvider.CreateScope())
-        {
-            var context = scope.ServiceProvider.GetRequiredService<DatabaseManager>();
-            await context.DeviceDbContexts[0].AddRangeAsync(sensorData);
-            await context.DeviceDbContexts[0].SaveChangesAsync();
+            frequency.Context.Add(data);
+            frequency.Context.SaveChanges();
         }
         await Task.Delay(frequency.FrequencyValue);
         WriteLoop(frequency);
