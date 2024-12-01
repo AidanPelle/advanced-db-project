@@ -43,8 +43,8 @@ public class RandomWriteService
     {
         using (var scope = _serviceProvider.CreateScope())
         {
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var devices = await context.Device.Include(d => d.Sensors).ToListAsync();
+            var context = scope.ServiceProvider.GetRequiredService<DatabaseManager>();
+            var devices = await context.DeviceDbContexts[0].Device.Include(d => d.Sensors).ToListAsync();
             frequencies = devices.Select(d => new WriteFrequency { Device = d, FrequencyValue = 1000 }).ToList();
         }
     }
@@ -64,9 +64,9 @@ public class RandomWriteService
         }
         using (var scope = _serviceProvider.CreateScope())
         {
-            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            await context.AddRangeAsync(sensorData);
-            await context.SaveChangesAsync();
+            var context = scope.ServiceProvider.GetRequiredService<DatabaseManager>();
+            await context.DeviceDbContexts[0].AddRangeAsync(sensorData);
+            await context.DeviceDbContexts[0].SaveChangesAsync();
         }
         await Task.Delay(frequency.FrequencyValue);
         WriteLoop(frequency);
