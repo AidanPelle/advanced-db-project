@@ -6,6 +6,11 @@ namespace shard_db;
 
 public class BookKeepingDbContext : DbContext
 {
+    public BookKeepingDbContext(DbContextOptions<BookKeepingDbContext> options)
+        : base(options)
+    {
+    }
+    
     public DbSet<QueryLog> QueryLog { get; set; }
     public DbSet<Site> Site { get; set; }
     public DbSet<SiteDevice> SiteDevice { get; set; }
@@ -51,6 +56,7 @@ public class Site
 public class SiteDevice
 {
     public int SiteId { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int DeviceId { get; set; }
 }
 

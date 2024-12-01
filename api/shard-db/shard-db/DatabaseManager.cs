@@ -8,24 +8,30 @@ public class DatabaseManager
 {
     DatabaseManager()
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-        dbContext.Database.Migrate();
+
         
-        if (!dbContext.Device.Any())
-        {
+        
+
             var jsonData = File.ReadAllText("./AppConf.json");
             var sites = JsonSerializer.Deserialize<List<SiteDto>>(jsonData);
 
             var bkDbContextOptionsBuilder = new DbContextOptionsBuilder<BookKeepingDbContext>();
             bkDbContextOptionsBuilder.UseSqlite("Data Source=./BookKeeping.db");
             BookKeepingDbContext = new BookKeepingDbContext(bkDbContextOptionsBuilder.Options);
-            
+            // BookKeepingDbContext.Database.Migrate();
             
             foreach (var site in sites)
             {
                 var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
                 deviceDbOptionsBuilder.UseSqlite($"Data Source={site.Name}.db");
                 DeviceDbContexts.Add(new DeviceDbContext(deviceDbOptionsBuilder.Options));
+
+                foreach (var deviceModel in site.Devices)
+                {
+                    var device = new Device();
+                    
+                    DeviceDbContexts.Last().Device
+                }
             }
             
             
@@ -36,7 +42,6 @@ public class DatabaseManager
                 dbContext.Device.AddRange(devices);
                 dbContext.SaveChanges();
             }
-        }
     }
     
     public BookKeepingDbContext BookKeepingDbContext { get; set; }
