@@ -6,18 +6,15 @@ using Microsoft.EntityFrameworkCore;
 namespace shard_db;
 public class DatabaseManager
 {
-    DatabaseManager()
+    public DatabaseManager()
     {
-
-        
-        
-
             var jsonData = File.ReadAllText("./AppConf.json");
-            var sites = JsonSerializer.Deserialize<List<SiteDto>>(jsonData);
+            var sites = JsonSerializer.Deserialize<List<SiteDto>>(jsonData)!;
 
             var bkDbContextOptionsBuilder = new DbContextOptionsBuilder<BookKeepingDbContext>();
             bkDbContextOptionsBuilder.UseSqlite("Data Source=./BookKeeping.db");
             BookKeepingDbContext = new BookKeepingDbContext(bkDbContextOptionsBuilder.Options);
+            BookKeepingDbContext.Database.EnsureCreated();
             // BookKeepingDbContext.Database.Migrate();
             
             foreach (var site in sites)
@@ -30,17 +27,8 @@ public class DatabaseManager
                 {
                     var device = new Device();
                     
-                    DeviceDbContexts.Last().Device
+                    // DeviceDbContexts.Last().Device
                 }
-            }
-            
-            
-        
-            // Add data to the database
-            if (devices != null)
-            {
-                dbContext.Device.AddRange(devices);
-                dbContext.SaveChanges();
             }
     }
     

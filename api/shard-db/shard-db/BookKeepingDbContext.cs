@@ -11,9 +11,9 @@ public class BookKeepingDbContext : DbContext
     {
     }
     
-    public DbSet<QueryLog> QueryLog { get; set; }
-    public DbSet<Site> Site { get; set; }
-    public DbSet<SiteDevice> SiteDevice { get; set; }
+    public DbSet<QueryLog> QueryLog { get; set; } = null!;
+    public DbSet<Site> Site { get; set; } = null!;
+    public DbSet<SiteDevice> SiteDevice { get; set; } = null!;
 }
 
 // TOP LEVEL DATABASE
