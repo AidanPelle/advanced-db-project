@@ -7,6 +7,7 @@ public class RandomWriteService
     public class WriteFrequency
     {
         public Device Device { get; set; } = null!;
+        public DeviceDbContext Context { get; set; } = null!;
         public int FrequencyValue { get; set; }     // The time between writes for a device, in milliseconds
     }
 
@@ -44,8 +45,12 @@ public class RandomWriteService
         using (var scope = _serviceProvider.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DatabaseManager>();
-            var devices = await context.DeviceDbContexts[0].Device.Include(d => d.Sensors).ToListAsync();
-            frequencies = devices.Select(d => new WriteFrequency { Device = d, FrequencyValue = 1000 }).ToList();
+            var frequencies = new List<WriteFrequency>();
+            foreach(var deviceContext in context.DeviceDbContexts) {
+                var list = await deviceContext.Device.Include(d => d.Sensors).ToListAsync();
+                var formattedList = list.Select(l => new WriteFrequency{Device = l, FrequencyValue = 1000, Context = deviceContext});
+                frequencies.AddRange(formattedList);
+            }
         }
     }
 
