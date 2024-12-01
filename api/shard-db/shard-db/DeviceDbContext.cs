@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace shard_db;
-public class ChildDbContext : DbContext
+public class DeviceDbContext : DbContext
 {
-    public ChildDbContext(DbContextOptions<ChildDbContext> options)
+    public DeviceDbContext(DbContextOptions<DeviceDbContext> options)
         : base(options)
     {
     }

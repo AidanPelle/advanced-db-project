@@ -1,16 +1,11 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace shard_db;
-public class ApplicationDbContext : DbContext
-{
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-        : base(options)
-    {
-    }
 
-    // Metadata for controlling data locations
+public class BookKeepingDbContext : DbContext
+{
     public DbSet<QueryLog> QueryLog { get; set; }
     public DbSet<Site> Site { get; set; }
     public DbSet<SiteDevice> SiteDevice { get; set; }

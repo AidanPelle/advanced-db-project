@@ -1,0 +1,330 @@
+﻿[
+  {
+    "id": 0,
+    "name": "Vancouver",
+    "devices": [
+      {
+        "Name": "Boiler 1",
+        "Sensors": [
+          {
+            "Name": "Return Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Supply Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Switch",
+            "Units": "On/Off"
+          }
+        ]
+      },
+      {
+        "Name": "Boiler 2",
+        "Sensors": [
+          {
+            "Name": "Return Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Supply Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Switch",
+            "Units": "On/Off"
+          }
+        ]
+      },
+      {
+        "Name": "Boiler 3",
+        "Sensors": [
+          {
+            "Name": "Return Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Supply Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Switch",
+            "Units": "On/Off"
+          }
+        ]
+      },
+      {
+        "Name": "Boiler 4",
+        "Sensors": [
+          {
+            "Name": "Return Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Supply Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Switch",
+            "Units": "On/Off"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "name": "Ohio",
+    "devices": [
+      {
+        "Name": "Oil Well 1",
+        "Sensors": [
+          {
+            "Name": "Well Pressure",
+            "Units": "kPa"
+          },
+          {
+            "Name": "Well Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Rate",
+            "Units": "GPM"
+          },
+          {
+            "Name": "Density",
+            "Units": "Kg/l"
+          }
+        ]
+      },
+      {
+        "Name": "Oil Well 2",
+        "Sensors": [
+          {
+            "Name": "Well Pressure",
+            "Units": "kPa"
+          },
+          {
+            "Name": "Well Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Rate",
+            "Units": "GPM"
+          },
+          {
+            "Name": "Density",
+            "Units": "Kg/l"
+          }
+        ]
+      },
+      {
+        "Name": "Oil Well 3",
+        "Sensors": [
+          {
+            "Name": "Well Pressure",
+            "Units": "kPa"
+          },
+          {
+            "Name": "Well Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Rate",
+            "Units": "GPM"
+          },
+          {
+            "Name": "Density",
+            "Units": "Kg/l"
+          }
+        ]
+      },
+      {
+        "Name": "Oil Well 4",
+        "Sensors": [
+          {
+            "Name": "Well Pressure",
+            "Units": "kPa"
+          },
+          {
+            "Name": "Well Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Rate",
+            "Units": "GPM"
+          },
+          {
+            "Name": "Density",
+            "Units": "Kg/l"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 0,
+    "name": "Edmonton",
+    "devices": [
+      {
+        "Name": "Boiler 5",
+        "Sensors": [
+          {
+            "Name": "Return Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Supply Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Switch",
+            "Units": "On/Off"
+          }
+        ]
+      },
+      {
+        "Name": "Boiler 6",
+        "Sensors": [
+          {
+            "Name": "Return Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Supply Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Switch",
+            "Units": "On/Off"
+          }
+        ]
+      },
+      {
+        "Name": "Boiler 7",
+        "Sensors": [
+          {
+            "Name": "Return Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Supply Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Switch",
+            "Units": "On/Off"
+          }
+        ]
+      },
+      {
+        "Name": "Boiler 8",
+        "Sensors": [
+          {
+            "Name": "Return Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Supply Water Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Switch",
+            "Units": "On/Off"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "name": "The Mac",
+    "devices": [
+      {
+        "Name": "Oil Well 5",
+        "Sensors": [
+          {
+            "Name": "Well Pressure",
+            "Units": "kPa"
+          },
+          {
+            "Name": "Well Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Rate",
+            "Units": "GPM"
+          },
+          {
+            "Name": "Density",
+            "Units": "Kg/l"
+          }
+        ]
+      },
+      {
+        "Name": "Oil Well 6",
+        "Sensors": [
+          {
+            "Name": "Well Pressure",
+            "Units": "kPa"
+          },
+          {
+            "Name": "Well Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Rate",
+            "Units": "GPM"
+          },
+          {
+            "Name": "Density",
+            "Units": "Kg/l"
+          }
+        ]
+      },
+      {
+        "Name": "Oil Well 7",
+        "Sensors": [
+          {
+            "Name": "Well Pressure",
+            "Units": "kPa"
+          },
+          {
+            "Name": "Well Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Rate",
+            "Units": "GPM"
+          },
+          {
+            "Name": "Density",
+            "Units": "Kg/l"
+          }
+        ]
+      },
+      {
+        "Name": "Oil Well 8",
+        "Sensors": [
+          {
+            "Name": "Well Pressure",
+            "Units": "kPa"
+          },
+          {
+            "Name": "Well Temperature",
+            "Units": "Celsius"
+          },
+          {
+            "Name": "Flow Rate",
+            "Units": "GPM"
+          },
+          {
+            "Name": "Density",
+            "Units": "Kg/l"
+          }
+        ]
+      }
+    ]
+  }
+]
