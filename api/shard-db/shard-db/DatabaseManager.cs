@@ -56,6 +56,7 @@ public class DatabaseManager
                     };
                     context.Sensor.Add(sensor);
                 }
+                deviceContext.SaveChanges();
                 
                 var siteDevice = new SiteDevice();
                 siteDevice.SiteId = site.Id;
@@ -63,8 +64,6 @@ public class DatabaseManager
                 BookKeepingDbContext.Add(siteDevice);
                 BookKeepingDbContext.SaveChanges();
             }
-            
-            deviceContext.SaveChanges();
         }
     }
     
