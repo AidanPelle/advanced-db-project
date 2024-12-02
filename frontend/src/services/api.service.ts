@@ -19,7 +19,7 @@ export class ApiService {
     return result;
   }
 
-  getDeviceDetail(id: number): Observable<DeviceDto> {
+  getDeviceDetail(id: string): Observable<DeviceDto> {
     const url = environment.apiUrl + "/devices/" + id;
     const result = this.http.get<DeviceDto>(url);
     return result;

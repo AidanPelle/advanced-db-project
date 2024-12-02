@@ -12,11 +12,11 @@ export class DeviceDetailComponent implements OnInit {
   private api = inject(ApiService);
   private route = inject(ActivatedRoute);
 
-  private deviceId: number = 0;
+  private deviceId: string = "";
   protected device?: DeviceDto;
 
   ngOnInit(): void {
-    this.deviceId = +(this.route.snapshot.paramMap.get('id') ?? 0);
+    this.deviceId = this.route.snapshot.paramMap.get('id')!;
     this.api.getDeviceDetail(this.deviceId).subscribe(result => {
       this.device = result;
     });
