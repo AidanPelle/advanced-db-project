@@ -1,1 +1,20 @@
-<p>write-matrix works!</p>
+
+<div style="display: flex; flex-direction: row; gap: 20px; margin-bottom: 20px;">
+    <div style="display: flex; flex-direction: column; gap: 20px; width: 100px;">
+        <div>_</div>
+        @for (item of matrixList[0].frequencies; track $index) {
+            <div>{{item.deviceName}}</div>
+        }
+    </div>
+
+    @for (item of matrixList; track $index) {
+        <div style="display: flex; flex-direction: column; gap: 20px; width: 100px;">
+            <div>{{item.siteName}}</div>
+            @for (frequency of item.frequencies; track frequency.deviceId) {
+                <!-- <div>{{frequency.frequencyValue}}</div> -->
+                <input type="number" [value]="frequency.frequencyValue" #input (blur)="saveFrequency(input.value)">
+            }
+        </div>
+        
+    }
+</div>

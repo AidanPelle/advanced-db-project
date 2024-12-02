@@ -19,4 +19,8 @@ export class WriteMatrixComponent implements OnInit {
       this.matrixList = res;
     });
   }
+
+  saveFrequency(value: number, ): void {
+
+  }
 }

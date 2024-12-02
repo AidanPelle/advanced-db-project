@@ -89,7 +89,13 @@ public class RandomWriteService
                 deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{frequency.Site.Name}.db");
                 var context = new DeviceDbContext(deviceDbOptionsBuilder.Options, frequency.Site.Id);
                 context.Add(data);
-                await context.SaveChangesAsync();
+                try {
+                    await context.SaveChangesAsync();
+                }
+                catch (Exception error) {
+                    Console.WriteLine(error);
+                }
+                
             }
         }
         await Task.Delay(frequency.FrequencyValue);
