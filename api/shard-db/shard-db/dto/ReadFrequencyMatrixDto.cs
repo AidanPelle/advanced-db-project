@@ -11,5 +11,5 @@ public class ReadFrequencyMatrixDto
 {
     public int SiteId { get; set; }
     public string SiteName { get; set; } = null!;
-    public List<DeviceReadFrequency> Frequencies { get; set; } = null!;
+    public List<DeviceReadFrequency> Frequencies { get; set; } = [];
 }
