@@ -16,6 +16,12 @@ builder.Services.AddCors(options => options.AddPolicy("AllowAll", p => { p.Allow
 var app = builder.Build();
 app.UseCors();
 
+using (var scope = app.Services.CreateScope())
+{
+    var disributionService = scope.ServiceProvider.GetRequiredService<DeviceDisributionService>();
+    _ = disributionService.WriteLoop(20_000);
+}
+
 app.MapControllers();
 
 app.Run();

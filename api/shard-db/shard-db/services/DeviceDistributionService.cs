@@ -8,18 +8,17 @@ public class DeviceDisributionService
     {
         _context = context.BookKeepingDbContext;
         _serviceProvider = serviceProvider;
-        _ = WriteLoop(30_000);
     }
     private BookKeepingDbContext _context;
     private readonly IServiceProvider _serviceProvider;
 
-    private async Task WriteLoop(int frequency)
+    public async Task WriteLoop(int frequency)
     {
         Console.WriteLine("Starting Distribution Check");
 
         // For each device, we need to know percentage of data requested from each site.
         // If there any sites are requesting more data than the current assigned site, move the device to the highest data assigned site
-        var pastThirtySeconds = DateTime.UtcNow.AddSeconds(-30);
+        var pastThirtySeconds = DateTime.UtcNow.AddMilliseconds(frequency * -1);
 
         var deviceDict = new Dictionary<string, Dictionary<int, int>>();
         var queryLogs = await _context.QueryLog.Where(q => q.AccessDate > pastThirtySeconds).ToListAsync();
