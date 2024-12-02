@@ -21,6 +21,6 @@ export class ReadMatrixComponent {
   }
 
   saveFrequency(value: number, siteId: number, deviceId: string): void {
-    // this.apiService.setReadFrequency(value, siteId, deviceId).subscribe();
+    this.apiService.setReadFrequency(value, siteId, deviceId).subscribe();
   }
 }
