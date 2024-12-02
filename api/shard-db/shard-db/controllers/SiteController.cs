@@ -38,4 +38,11 @@ public class SitesController(DatabaseManager context, RandomWriteService randomW
         var frequencyMatrixDtos = randomReadService.GetReadFrequencies();
         return Ok(frequencyMatrixDtos);
     }
+    
+    [HttpPost("read-matrix")]
+    public ActionResult SetReadFrequency([FromBody] UpdateFrequencyValDto frequencyValDto)
+    {
+        randomReadService.SetReadFrequency(frequencyValDto.DeviceId, frequencyValDto.SiteId, frequencyValDto.Value);
+        return NoContent();
+    }
 }

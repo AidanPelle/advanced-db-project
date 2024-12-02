@@ -46,4 +46,14 @@ export class ApiService {
     };
     return this.http.post<void>(url, payload);
   }
+
+  setReadFrequency(value: number, siteId: number, deviceId: string): Observable<void> {
+    const url = environment.apiUrl + "/sites/read-matrix";
+    let payload = {
+      value: value,
+      siteId: siteId,
+      deviceId: deviceId,
+    };
+    return this.http.post<void>(url, payload);
+  }
 }
