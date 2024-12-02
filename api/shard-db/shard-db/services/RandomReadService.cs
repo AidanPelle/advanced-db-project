@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using shard_db.dto;
 
 namespace shard_db.services;
 
@@ -19,6 +20,38 @@ public class RandomReadService
     {
         _serviceProvider = serviceProvider;
         _ = InitReads();
+    }
+
+    public async Task<List<ReadFrequencyMatrixDto>> GetReadFrequencies()
+    {
+        var matrix = new List<ReadFrequencyMatrixDto>();
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<DatabaseManager>();
+            var sites = await context.BookKeepingDbContext.Site.ToListAsync();
+            foreach (var site in sites)
+            {
+                var siteFreq = new ReadFrequencyMatrixDto();
+                siteFreq.SiteId = site.Id;
+                siteFreq.SiteName = site.Name;
+                var frequenciesForSite = frequencies.Where(f => f.Site.Id == site.Id).ToList();
+                var deviceReadFrequencies = new List<DeviceReadFrequency>();
+                foreach (var frequency in frequenciesForSite)
+                {
+                    deviceReadFrequencies.Add(new DeviceReadFrequency
+                    {
+                        DeviceId = frequency.Device.Id,
+                        DeviceName = frequency.Device.Name,
+                        Frequency = frequency.FrequencyValue
+                    });
+                }
+
+                siteFreq.DeviceReadFrequencies = deviceReadFrequencies;
+                matrix.Add(siteFreq);
+            }
+        }
+
+        return matrix;
     }
 
     public void SetReadFrequency(string deviceId, int frequencyValue)
