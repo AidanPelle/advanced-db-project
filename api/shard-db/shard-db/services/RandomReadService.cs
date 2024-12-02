@@ -20,7 +20,6 @@ public class RandomReadService
     public RandomReadService(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
-        _ = InitReads();
     }
 
     public List<ReadFrequencyMatrixDto> GetReadFrequencies()
@@ -83,7 +82,7 @@ public class RandomReadService
         }
     }
 
-    private async Task InitReads()
+    public async Task InitReads()
     {
         await SetReadFrequencies(); 
 
@@ -125,6 +124,20 @@ public class RandomReadService
                 .Include(s => s.Sensors)
                 .ThenInclude(sd => sd.SensorDatas)
                 .ToListAsync();
+
+            var bkDbContextOptionsBuilder = new DbContextOptionsBuilder<BookKeepingDbContext>();
+            bkDbContextOptionsBuilder.UseSqlite("Data Source=./databases/BookKeeping.db");
+
+            var bookKeepingDbContext = new BookKeepingDbContext(bkDbContextOptionsBuilder.Options);
+            bookKeepingDbContext.Add(new QueryLog
+            {
+                DeviceId = frequency.Device.Id,
+                SiteId = frequency.RequestingSite.Id,
+                AccessDate = DateTime.UtcNow,
+                DataType = DATA_TYPE.READ,
+                DataVolume = JsonSerializer.SerializeToUtf8Bytes(res).Length
+            });
+            bookKeepingDbContext.SaveChanges();
 
             // Console.WriteLine($"Reading For: {frequency.RequestingSite.Name} for {frequency.AssignedSite.Name}. Device: {frequency.Device.Name}");
             // Console.WriteLine($"{JsonSerializer.Serialize(res)}");

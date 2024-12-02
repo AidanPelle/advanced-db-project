@@ -98,8 +98,14 @@ public class DeviceDisributionService
             var toContext = new DeviceDbContext(toSiteOptionsBuilder.Options, toSiteId);
 
 
-            Device device = (await fromContext.Device.Include(d => d.Sensors).ThenInclude(s => s.SensorDatas).FirstOrDefaultAsync(d => d.Id == deviceId))!;
-            toContext.Add(device);
+            try {
+                var device = await fromContext.Device.Include(d => d.Sensors).ThenInclude(s => s.SensorDatas).FirstOrDefaultAsync(d => d.Id == deviceId);
+                toContext.Add(device!);
+                toContext.SaveChanges();
+            } catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }

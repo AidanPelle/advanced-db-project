@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 
 namespace shard_db.services;
@@ -18,7 +19,6 @@ public class RandomWriteService
     public RandomWriteService(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
-        _ = InitWrites();
     }
 
     public void SetWriteFrequency(string deviceId, int siteId, int frequencyValue)
@@ -30,7 +30,7 @@ public class RandomWriteService
         }
     }
 
-    private async Task InitWrites()
+    public async Task InitWrites()
     {
         await SetWriteFrequencies();
 
@@ -92,6 +92,21 @@ public class RandomWriteService
                 context.Add(data);
                 try {
                     await context.SaveChangesAsync();
+
+                    var bkDbContextOptionsBuilder = new DbContextOptionsBuilder<BookKeepingDbContext>();
+                    bkDbContextOptionsBuilder.UseSqlite("Data Source=./databases/BookKeeping.db");
+
+                    var bookKeepingDbContext = new BookKeepingDbContext(bkDbContextOptionsBuilder.Options);
+                    bookKeepingDbContext.Add(new QueryLog
+                    {
+                        DeviceId = frequency.Device.Id,
+                        SiteId = frequency.RequestingSite.Id,
+                        AccessDate = DateTime.UtcNow,
+                        DataType = DATA_TYPE.READ,
+                        DataVolume = JsonSerializer.SerializeToUtf8Bytes(data).Length
+                    });
+                    bookKeepingDbContext.SaveChanges();
+
                     // Console.WriteLine($"Site Requesting: {frequency.RequestingSite.Name}, Device: {frequency.Device.Name}, Sensor: {sensor.Name}");
                 }
                 catch (Exception error) {

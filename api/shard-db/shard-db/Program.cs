@@ -20,6 +20,12 @@ using (var scope = app.Services.CreateScope())
 {
     var disributionService = scope.ServiceProvider.GetRequiredService<DeviceDisributionService>();
     _ = disributionService.WriteLoop(20_000);
+
+    var randomReadService = scope.ServiceProvider.GetRequiredService<RandomReadService>();
+    _ = randomReadService.InitReads();
+
+    var randomWriteService = scope.ServiceProvider.GetRequiredService<RandomWriteService>();
+    _ = randomWriteService.InitWrites();
 }
 
 app.MapControllers();

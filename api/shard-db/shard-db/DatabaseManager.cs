@@ -17,6 +17,7 @@ public class DatabaseManager
 
         var bkDbContextOptionsBuilder = new DbContextOptionsBuilder<BookKeepingDbContext>();
         bkDbContextOptionsBuilder.UseSqlite("Data Source=./databases/BookKeeping.db");
+        bkDbContextOptionsBuilder.EnableSensitiveDataLogging();
         
         BookKeepingDbContext = new BookKeepingDbContext(bkDbContextOptionsBuilder.Options);
         BookKeepingDbContext.Database.EnsureDeleted();
