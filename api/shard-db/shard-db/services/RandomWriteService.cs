@@ -20,9 +20,9 @@ public class RandomWriteService
         _ = InitWrites();
     }
 
-    public void SetWriteFrequency(string deviceId, int frequencyValue)
+    public void SetWriteFrequency(string deviceId, int siteId, int frequencyValue)
     {
-        var device = frequencies.First(f => f.Device.Id == deviceId);
+        var device = frequencies.First(f => f.Device.Id == deviceId && f.Site.Id == siteId);
         if (device != null)
         {
             device.FrequencyValue = frequencyValue;
@@ -50,7 +50,7 @@ public class RandomWriteService
                 foreach (var deviceContext in context.DeviceDbContexts)
                 {
                     var list = await deviceContext.Device.Include(d => d.Sensors).ToListAsync();
-                    var formattedList = list.Select(l => new WriteFrequency { Device = l, Site = site, FrequencyValue = 1000 });
+                    var formattedList = list.Select(l => new WriteFrequency { Device = l, Site = site, FrequencyValue = 10000 });
                     frequencies.AddRange(formattedList);
                 }
             }

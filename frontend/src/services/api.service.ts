@@ -31,4 +31,14 @@ export class ApiService {
     const result = this.http.get<DeviceDto>(url);
     return result;
   }
+
+  setWriteFrequency(value: number, siteId: number, deviceId: string): Observable<void> {
+    const url = environment.apiUrl + "/sites/write-matrix";
+    let payload = {
+      value: value,
+      siteId: siteId,
+      deviceId: deviceId,
+    };
+    return this.http.post<void>(url, payload);
+  }
 }

@@ -24,4 +24,11 @@ public class SitesController(DatabaseManager context, RandomWriteService randomW
         var frequencyMatrixDtos = randomWriteService.GetWriteFrequencies();
         return Ok(frequencyMatrixDtos);
     }
+
+    [HttpPost("write-matrix")]
+    public ActionResult SetWriteFrequency([FromBody] UpdateFrequencyValDto frequencyValDto)
+    {
+        randomWriteService.SetWriteFrequency(frequencyValDto.DeviceId, frequencyValDto.SiteId, frequencyValDto.Value);
+        return NoContent();
+    }
 }

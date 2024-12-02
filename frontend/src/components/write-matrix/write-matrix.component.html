@@ -12,7 +12,7 @@
             <div>{{item.siteName}}</div>
             @for (frequency of item.frequencies; track frequency.deviceId) {
                 <!-- <div>{{frequency.frequencyValue}}</div> -->
-                <input type="number" [value]="frequency.frequencyValue" #input (blur)="saveFrequency(input.value)">
+                <input type="number" [value]="frequency.frequencyValue" #input (blur)="saveFrequency(+input.value, item.siteId, frequency.deviceId)">
             }
         </div>
         

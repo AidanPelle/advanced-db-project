@@ -20,7 +20,7 @@ export class WriteMatrixComponent implements OnInit {
     });
   }
 
-  saveFrequency(value: number, ): void {
-
+  saveFrequency(value: number, siteId: number, deviceId: string): void {
+    this.apiService.setWriteFrequency(value, siteId, deviceId).subscribe();
   }
 }

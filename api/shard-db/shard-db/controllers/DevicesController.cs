@@ -9,7 +9,7 @@ namespace shard_db.controllers;
 [Route("[controller]")]
 [EnableCors("AllowAll")]
 [ApiController]
-public class DevicesController(DatabaseManager context, RandomWriteService randomWriteService) : ControllerBase
+public class DevicesController(DatabaseManager context) : ControllerBase
 {
     [HttpGet("{deviceId}")]
     public async Task<ActionResult<DeviceDto>> GetDevice(string deviceId)
@@ -67,14 +67,6 @@ public class DevicesController(DatabaseManager context, RandomWriteService rando
 
         device.Name = updatedDevice.Name;
         await context.DeviceDbContexts[0].SaveChangesAsync();
-
-        return NoContent();
-    }
-
-    [HttpPut("{deviceId}/frequency/{frequencyValue:int}")]
-    public ActionResult UpdateDeviceFrequency(string deviceId, int frequencyValue)
-    {
-        randomWriteService.SetWriteFrequency(deviceId, frequencyValue);
 
         return NoContent();
     }
