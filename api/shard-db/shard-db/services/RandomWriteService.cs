@@ -6,8 +6,9 @@ public class RandomWriteService
 {
     public class WriteFrequency
     {
-        public Site Site { get; set; } = null!;
         public Device Device { get; set; } = null!;
+        public Site RequestingSite { get; set; } = null!;
+        public Site AssignedSite { get; set; } = null!;
         public int FrequencyValue { get; set; }     // The time between writes for a device, in milliseconds
     }
 
@@ -22,7 +23,7 @@ public class RandomWriteService
 
     public void SetWriteFrequency(string deviceId, int siteId, int frequencyValue)
     {
-        var device = frequencies.First(f => f.Device.Id == deviceId && f.Site.Id == siteId);
+        var device = frequencies.First(f => f.Device.Id == deviceId && f.RequestingSite.Id == siteId);
         if (device != null)
         {
             device.FrequencyValue = frequencyValue;
@@ -35,7 +36,6 @@ public class RandomWriteService
 
         foreach (var frequency in frequencies)
         {
-            Console.WriteLine("tes2t");
             WriteLoop(frequency);
         }
     }
@@ -50,7 +50,8 @@ public class RandomWriteService
                 foreach (var deviceContext in context.DeviceDbContexts)
                 {
                     var list = await deviceContext.Device.Include(d => d.Sensors).ToListAsync();
-                    var formattedList = list.Select(l => new WriteFrequency { Device = l, Site = site, FrequencyValue = 10000 });
+                    var assignedSite = context.BookKeepingDbContext.Site.Find(deviceContext.SiteId)!;
+                    var formattedList = list.Select(l => new WriteFrequency { Device = l, RequestingSite = site, AssignedSite = assignedSite, FrequencyValue = 10000 });
                     frequencies.AddRange(formattedList);
                 }
             }
@@ -62,7 +63,7 @@ public class RandomWriteService
         var list = new List<WriteFrequencyMatrixDto>();
         foreach (var frequencyDto in frequencies)
         {
-            var site = list.Where(l => l.SiteId == frequencyDto.Site.Id).FirstOrDefault(new WriteFrequencyMatrixDto { SiteId = frequencyDto.Site.Id, SiteName = frequencyDto.Site.Name });
+            var site = list.Where(l => l.SiteId == frequencyDto.RequestingSite.Id).FirstOrDefault(new WriteFrequencyMatrixDto { SiteId = frequencyDto.RequestingSite.Id, SiteName = frequencyDto.RequestingSite.Name });
             var device = new WriteFrequencyDevice { DeviceId = frequencyDto.Device.Id, DeviceName = frequencyDto.Device.Name, FrequencyValue = frequencyDto.FrequencyValue };
             site.Frequencies.Add(device);
             if (!list.Contains(site))
@@ -86,11 +87,12 @@ public class RandomWriteService
             using (var scope = _serviceProvider.CreateScope())
             {
                 var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
-                deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{frequency.Site.Name}.db");
-                var context = new DeviceDbContext(deviceDbOptionsBuilder.Options, frequency.Site.Id);
+                deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{frequency.AssignedSite.Name}.db");
+                var context = new DeviceDbContext(deviceDbOptionsBuilder.Options, frequency.AssignedSite.Id);
                 context.Add(data);
                 try {
                     await context.SaveChangesAsync();
+                    Console.WriteLine($"Site Requesting: {frequency.RequestingSite.Name}, Device: {frequency.Device.Name}, Sensor: {sensor.Name}");
                 }
                 catch (Exception error) {
                     Console.WriteLine(error);
