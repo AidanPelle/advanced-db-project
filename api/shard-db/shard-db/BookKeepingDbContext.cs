@@ -28,7 +28,7 @@ public class QueryLog
     public int Id { get; set; }
 
     [Required]
-    public int FragmentId { get; set; }
+    public string DeviceId { get; set; } = null!;
 
     [Required]
     public int SiteId { get; set; }

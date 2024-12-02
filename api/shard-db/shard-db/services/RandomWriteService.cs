@@ -51,7 +51,7 @@ public class RandomWriteService
                 {
                     var list = await deviceContext.Device.Include(d => d.Sensors).ToListAsync();
                     var assignedSite = context.BookKeepingDbContext.Site.Find(deviceContext.SiteId)!;
-                    var formattedList = list.Select(l => new WriteFrequency { Device = l, RequestingSite = site, AssignedSite = assignedSite, FrequencyValue = 10000 });
+                    var formattedList = list.Select(l => new WriteFrequency { Device = l, RequestingSite = site, AssignedSite = assignedSite, FrequencyValue = 5000 });
                     frequencies.AddRange(formattedList);
                 }
             }
