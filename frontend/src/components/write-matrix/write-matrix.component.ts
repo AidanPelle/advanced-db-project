@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
+import { WriteMatrixDto } from '../../models/WriteMatrix';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-write-matrix',
@@ -7,6 +9,14 @@ import { Component } from '@angular/core';
   templateUrl: './write-matrix.component.html',
   styleUrl: './write-matrix.component.scss'
 })
-export class WriteMatrixComponent {
+export class WriteMatrixComponent implements OnInit {
+  matrixList: WriteMatrixDto[] = [];
 
+  apiService = inject(ApiService);
+
+  ngOnInit(): void {
+    this.apiService.getWriteFrequencyMatrix().subscribe(res => {
+      this.matrixList = res;
+    });
+  }
 }

@@ -9,12 +9,19 @@ namespace shard_db.controllers;
 [Route("[controller]")]
 [EnableCors("AllowAll")]
 [ApiController]
-public class SitesController(DatabaseManager context) : ControllerBase
+public class SitesController(DatabaseManager context, RandomWriteService randomWriteService) : ControllerBase
 {
     [HttpGet("all")]
     public async Task<ActionResult<List<Site>>> GetSites()
     {
         var sites = await context.BookKeepingDbContext.Site.ToListAsync();
         return Ok(sites);
+    }
+
+    [HttpGet("write-matrix")]
+    public ActionResult<List<WriteFrequencyMatrixDto>> GetWriteMatrix()
+    {
+        var frequencyMatrixDtos = randomWriteService.GetWriteFrequencies();
+        return Ok(frequencyMatrixDtos);
     }
 }

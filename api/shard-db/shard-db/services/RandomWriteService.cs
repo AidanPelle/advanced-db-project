@@ -12,7 +12,7 @@ public class RandomWriteService
         public int FrequencyValue { get; set; }     // The time between writes for a device, in milliseconds
     }
 
-    private List<WriteFrequency> frequencies = new List<WriteFrequency>();
+    private List<WriteFrequency> frequencies = [];
     private Random random = new Random();
     private readonly IServiceProvider _serviceProvider;
     public RandomWriteService(IServiceProvider serviceProvider)
@@ -32,9 +32,9 @@ public class RandomWriteService
 
     private async Task InitWrites()
     {
-        await SetWriteFrequencies(); 
+        await SetWriteFrequencies();
 
-        foreach(var frequency in frequencies)
+        foreach (var frequency in frequencies)
         {
             Console.WriteLine("tes2t");
             WriteLoop(frequency);
@@ -46,15 +46,32 @@ public class RandomWriteService
         using (var scope = _serviceProvider.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DatabaseManager>();
-            var frequencies = new List<WriteFrequency>();
-                foreach(var site in context.BookKeepingDbContext.Site) {
-                    foreach(var deviceContext in context.DeviceDbContexts) {
+            foreach (var site in context.BookKeepingDbContext.Site)
+            {
+                foreach (var deviceContext in context.DeviceDbContexts)
+                {
                     var list = await deviceContext.Device.Include(d => d.Sensors).ToListAsync();
-                    var formattedList = list.Select(l => new WriteFrequency{Device = l, Site = site, FrequencyValue = 1000, Context = deviceContext});
+                    var formattedList = list.Select(l => new WriteFrequency { Device = l, Site = site, FrequencyValue = 1000, Context = deviceContext });
                     frequencies.AddRange(formattedList);
                 }
             }
         }
+    }
+
+    public List<WriteFrequencyMatrixDto> GetWriteFrequencies()
+    {
+        var list = new List<WriteFrequencyMatrixDto>();
+        foreach (var frequencyDto in frequencies)
+        {
+            var site = list.Where(l => l.SiteId == frequencyDto.Site.Id).FirstOrDefault(new WriteFrequencyMatrixDto { SiteId = frequencyDto.Site.Id, SiteName = frequencyDto.Site.Name });
+            var device = new WriteFrequencyDevice { DeviceId = frequencyDto.Device.Id, DeviceName = frequencyDto.Device.Name, FrequencyValue = frequencyDto.FrequencyValue };
+            site.Frequencies.Add(device);
+            if (!list.Contains(site))
+            {
+                list.Add(site);
+            }
+        }
+        return list;
     }
 
     private async void WriteLoop(WriteFrequency frequency)
@@ -68,10 +85,24 @@ public class RandomWriteService
                 Value = random.NextDouble() * 1000,
             };
             frequency.Context.Add(data);
-            frequency.Context.SaveChanges();
+            _ = frequency.Context.SaveChangesAsync();
         }
         await Task.Delay(frequency.FrequencyValue);
         WriteLoop(frequency);
     }
 
+}
+
+public class WriteFrequencyMatrixDto
+{
+    public int SiteId { get; set; }
+    public string SiteName { get; set; } = null!;
+    public List<WriteFrequencyDevice> Frequencies { get; set; } = [];
+}
+
+public class WriteFrequencyDevice
+{
+    public string DeviceId { get; set; } = null!;
+    public string DeviceName { get; set; } = null!;
+    public int FrequencyValue { get; set; }
 }
