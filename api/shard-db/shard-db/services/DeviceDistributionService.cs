@@ -4,15 +4,19 @@ namespace shard_db.services;
 
 public class DeviceDisributionService
 {
-    public DeviceDisributionService(DatabaseManager context)
+    public DeviceDisributionService(DatabaseManager context, IServiceProvider serviceProvider)
     {
         _context = context.BookKeepingDbContext;
-        WriteLoop(30_000);
+        _serviceProvider = serviceProvider;
+        _ = WriteLoop(30_000);
     }
     private BookKeepingDbContext _context;
+    private readonly IServiceProvider _serviceProvider;
 
-    private async void WriteLoop(int frequency)
+    private async Task WriteLoop(int frequency)
     {
+        Console.WriteLine("Starting Distribution Check");
+
         // For each device, we need to know percentage of data requested from each site.
         // If there any sites are requesting more data than the current assigned site, move the device to the highest data assigned site
         var pastThirtySeconds = DateTime.UtcNow.AddSeconds(-30);
@@ -69,10 +73,34 @@ public class DeviceDisributionService
             // In this case, either the current assigned site has had no data written to it,
             // or some other site has written at least 50% more data. As a result, we need to move all data for this site,
             // and update the frequency mappings in RandomWriteService and RandomReadService
+            Console.WriteLine($"Writing Device: {device.Key}, From Site: {assignedSiteId}, To Site: {largestSite.Key}");
+            await MoveDeviceData(device.Key, assignedSiteId, largestSite.Key);
         }
 
         await Task.Delay(frequency);
-        WriteLoop(frequency);
+        _ = WriteLoop(frequency);
     }
 
+    private async Task MoveDeviceData(string deviceId, int fromSiteId, int toSiteId)
+    {
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var fromSiteName = await _context.Site.FindAsync(fromSiteId);
+            var toSiteName = await _context.Site.FindAsync(toSiteId);
+
+
+            var fromSiteOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
+                fromSiteOptionsBuilder.UseSqlite($"Data Source=./databases/{fromSiteName}.db");
+            var fromContext = new DeviceDbContext(fromSiteOptionsBuilder.Options, fromSiteId);
+
+
+            var toSiteOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
+                toSiteOptionsBuilder.UseSqlite($"Data Source=./databases/{toSiteName}.db");
+            var toContext = new DeviceDbContext(toSiteOptionsBuilder.Options, toSiteId);
+
+
+            Device device = (await fromContext.Device.Include(d => d.Sensors).ThenInclude(s => s.SensorDatas).FirstOrDefaultAsync(d => d.Id == deviceId))!;
+            toContext.Add(device);
+        }
+    }
 }

@@ -92,7 +92,7 @@ public class RandomWriteService
                 context.Add(data);
                 try {
                     await context.SaveChangesAsync();
-                    Console.WriteLine($"Site Requesting: {frequency.RequestingSite.Name}, Device: {frequency.Device.Name}, Sensor: {sensor.Name}");
+                    // Console.WriteLine($"Site Requesting: {frequency.RequestingSite.Name}, Device: {frequency.Device.Name}, Sensor: {sensor.Name}");
                 }
                 catch (Exception error) {
                     Console.WriteLine(error);

@@ -5,38 +5,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// builder.Services.AddDbContext<ApplicationDbContext>(options => {
-//     options.UseSqlite("Data Source=database.db");
-// });
-
 builder.Services.AddSingleton<DatabaseManager>();
 
 builder.Services.AddSingleton<RandomWriteService>();
 builder.Services.AddSingleton<RandomReadService>();
+builder.Services.AddSingleton<DeviceDisributionService>();
 
 builder.Services.AddCors(options => options.AddPolicy("AllowAll", p => { p.AllowAnyOrigin(); p.AllowAnyMethod(); p.AllowAnyHeader().WithExposedHeaders("content-disposition"); })); //allow CORS services
 
 var app = builder.Build();
 app.UseCors();
-
-using (var scope = app.Services.CreateScope())
-{
-    // var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    // dbContext.Database.Migrate();
-    //
-    // if (!dbContext.Device.Any())
-    // {
-    //     var jsonData = File.ReadAllText("./InitData.json");
-    //     var devices = JsonSerializer.Deserialize<List<Device>>(jsonData);
-    //
-    //     // Add data to the database
-    //     if (devices != null)
-    //     {
-    //         dbContext.Device.AddRange(devices);
-    //         dbContext.SaveChanges();
-    //     }
-    // }
-}
 
 app.MapControllers();
 

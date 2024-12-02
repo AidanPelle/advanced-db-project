@@ -126,8 +126,8 @@ public class RandomReadService
                 .ThenInclude(sd => sd.SensorDatas)
                 .ToListAsync();
 
-            Console.WriteLine($"Reading For: {frequency.RequestingSite.Name} for {frequency.AssignedSite.Name}. Device: {frequency.Device.Name}");
-            Console.WriteLine($"{JsonSerializer.Serialize(res)}");
+            // Console.WriteLine($"Reading For: {frequency.RequestingSite.Name} for {frequency.AssignedSite.Name}. Device: {frequency.Device.Name}");
+            // Console.WriteLine($"{JsonSerializer.Serialize(res)}");
             await Task.Delay(frequency.FrequencyValue);
             ReadLoop(frequency);
         }
