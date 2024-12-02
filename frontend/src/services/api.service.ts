@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
-import { DeviceDto } from '../models/DeviceDto';
-import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../environment/environment';
-import { WriteMatrixDto } from '../models/WriteMatrix';
+import {Injectable} from '@angular/core';
+import {DeviceDto} from '../models/DeviceDto';
+import {Observable} from 'rxjs';
+import {HttpClient} from '@angular/common/http';
+import {environment} from '../environment/environment';
+import {WriteMatrixDto} from '../models/WriteMatrix';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +24,11 @@ export class ApiService {
     const url = environment.apiUrl + "/sites/write-matrix"
     const result = this.http.get<WriteMatrixDto[]>(url);
     return result;
+  }
+
+  getReadFrequencyMatrix(): Observable<WriteMatrixDto[]> {
+    const url = environment.apiUrl + "/sites/read-matrix"
+    return this.http.get<WriteMatrixDto[]>(url);
   }
 
   getDeviceDetail(id: string): Observable<DeviceDto> {

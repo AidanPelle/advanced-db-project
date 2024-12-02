@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<DatabaseManager>();
 
 builder.Services.AddSingleton<RandomWriteService>();
+builder.Services.AddSingleton<RandomReadService>();
 
 builder.Services.AddCors(options => options.AddPolicy("AllowAll", p => { p.AllowAnyOrigin(); p.AllowAnyMethod(); p.AllowAnyHeader().WithExposedHeaders("content-disposition"); })); //allow CORS services
 

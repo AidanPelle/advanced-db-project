@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 using shard_db.dto;
 
 namespace shard_db.services;
@@ -22,13 +24,13 @@ public class RandomReadService
         _ = InitReads();
     }
 
-    public async Task<List<ReadFrequencyMatrixDto>> GetReadFrequencies()
+    public List<ReadFrequencyMatrixDto> GetReadFrequencies()
     {
         var matrix = new List<ReadFrequencyMatrixDto>();
         using (var scope = _serviceProvider.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DatabaseManager>();
-            var sites = await context.BookKeepingDbContext.Site.ToListAsync();
+            var sites = context.BookKeepingDbContext.Site.ToList();
             foreach (var site in sites)
             {
                 var siteFreq = new ReadFrequencyMatrixDto();
@@ -42,11 +44,11 @@ public class RandomReadService
                     {
                         DeviceId = frequency.Device.Id,
                         DeviceName = frequency.Device.Name,
-                        Frequency = frequency.FrequencyValue
+                        FrequencyValue = frequency.FrequencyValue
                     });
                 }
 
-                siteFreq.DeviceReadFrequencies = deviceReadFrequencies;
+                siteFreq.Frequencies = deviceReadFrequencies;
                 matrix.Add(siteFreq);
             }
         }
@@ -69,7 +71,6 @@ public class RandomReadService
 
         foreach(var frequency in frequencies)
         {
-            Console.WriteLine("tes2t");
             ReadLoop(frequency);
         }
     }
@@ -80,14 +81,13 @@ public class RandomReadService
         {
             var context = scope.ServiceProvider.GetRequiredService<DatabaseManager>();
             var sites = await context.BookKeepingDbContext.Site.ToListAsync();
-            var frequencies = new List<ReadFrequency>();
             foreach (var site in sites)
             {
                 foreach (var deviceContext in context.DeviceDbContexts)
                 {
                     var list = await deviceContext.Device.Include(d => d.Sensors).ToListAsync();
                     var formattedList = list.Select(l => new ReadFrequency
-                        { Device = l, FrequencyValue = 1000, Context = deviceContext });
+                        { Device = l, FrequencyValue = 1000, Context = deviceContext, Site = site});
                     frequencies.AddRange(formattedList);
                 }
             }
@@ -96,13 +96,21 @@ public class RandomReadService
 
     private async void ReadLoop(ReadFrequency frequency)
     {
-        await frequency.Context.Device.Where(d => d.Id == frequency.Device.Id)
-            .Include(s => s.Sensors)
-            .ThenInclude(sd => sd.SensorDatas)
-            .ToListAsync();
-        
-        await Task.Delay(frequency.FrequencyValue);
-        ReadLoop(frequency);
+        using (var scope = _serviceProvider.CreateScope())
+        {
+            var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
+            deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{frequency.Site.Name}.db");
+            var context = new DeviceDbContext(deviceDbOptionsBuilder.Options, frequency.Site.Id);
+            var res = await context.Device.Where(d => d.Id == frequency.Device.Id)
+                .Include(s => s.Sensors)
+                .ThenInclude(sd => sd.SensorDatas)
+                .ToListAsync();
+
+            Console.WriteLine($"Reading From: {frequency.Site.Name} for {frequency.Device.Name}");
+            Console.WriteLine($"{JsonSerializer.Serialize(res)}");
+            await Task.Delay(frequency.FrequencyValue);
+            ReadLoop(frequency);
+        }
     }
 
 }

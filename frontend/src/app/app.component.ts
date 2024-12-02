@@ -25,4 +25,8 @@ export class AppComponent {
   navToWriteMatrix() {
     this.router.navigate(["writeMatrix"]);
   }
+
+  navToReadMatrix() {
+    this.router.navigate(["readMatrix"]);
+  }
 }

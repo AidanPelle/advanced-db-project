@@ -80,7 +80,7 @@ public class SensorData
     [Required]
     public double Value { get; set; }
 
-    [ForeignKey("SensorId")]
+    // [ForeignKey("SensorId")]
     public Sensor Sensor { get; set; } = null!;
 }
 
