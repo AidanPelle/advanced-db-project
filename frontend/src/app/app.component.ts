@@ -21,4 +21,8 @@ export class AppComponent {
   navToDeviceList() {
     this.router.navigate(["devices"]);
   }
+
+  navToWriteMatrix() {
+    this.router.navigate(["writeMatrix"]);
+  }
 }
