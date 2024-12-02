@@ -46,11 +46,17 @@ public class RandomReadService
         using (var scope = _serviceProvider.CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DatabaseManager>();
+            var sites = await context.BookKeepingDbContext.Site.ToListAsync();
             var frequencies = new List<ReadFrequency>();
-            foreach(var deviceContext in context.DeviceDbContexts) {
-                var list = await deviceContext.Device.Include(d => d.Sensors).ToListAsync();
-                var formattedList = list.Select(l => new ReadFrequency{Device = l, FrequencyValue = 1000, Context = deviceContext});
-                frequencies.AddRange(formattedList);
+            foreach (var site in sites)
+            {
+                foreach (var deviceContext in context.DeviceDbContexts)
+                {
+                    var list = await deviceContext.Device.Include(d => d.Sensors).ToListAsync();
+                    var formattedList = list.Select(l => new ReadFrequency
+                        { Device = l, FrequencyValue = 1000, Context = deviceContext });
+                    frequencies.AddRange(formattedList);
+                }
             }
         }
     }
