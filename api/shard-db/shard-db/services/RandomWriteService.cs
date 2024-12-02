@@ -8,7 +8,6 @@ public class RandomWriteService
     {
         public Site Site { get; set; } = null!;
         public Device Device { get; set; } = null!;
-        public DeviceDbContext Context { get; set; } = null!;
         public int FrequencyValue { get; set; }     // The time between writes for a device, in milliseconds
     }
 
@@ -51,7 +50,7 @@ public class RandomWriteService
                 foreach (var deviceContext in context.DeviceDbContexts)
                 {
                     var list = await deviceContext.Device.Include(d => d.Sensors).ToListAsync();
-                    var formattedList = list.Select(l => new WriteFrequency { Device = l, Site = site, FrequencyValue = 1000, Context = deviceContext });
+                    var formattedList = list.Select(l => new WriteFrequency { Device = l, Site = site, FrequencyValue = 1000 });
                     frequencies.AddRange(formattedList);
                 }
             }
@@ -84,8 +83,14 @@ public class RandomWriteService
                 ReceivedTimestamp = DateTime.UtcNow,
                 Value = random.NextDouble() * 1000,
             };
-            frequency.Context.Add(data);
-            _ = frequency.Context.SaveChangesAsync();
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
+                deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{frequency.Site.Name}.db");
+                var context = new DeviceDbContext(deviceDbOptionsBuilder.Options, frequency.Site.Id);
+                context.Add(data);
+                await context.SaveChangesAsync();
+            }
         }
         await Task.Delay(frequency.FrequencyValue);
         WriteLoop(frequency);

@@ -32,7 +32,7 @@ public class DatabaseManager
             
             var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
             deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{siteModel.Name}.db");
-            var deviceContext = new DeviceDbContext(deviceDbOptionsBuilder.Options);
+            var deviceContext = new DeviceDbContext(deviceDbOptionsBuilder.Options, site.Id);
             deviceContext.Database.EnsureDeleted();
             deviceContext.Database.EnsureCreated();
             DeviceDbContexts.Add(deviceContext);

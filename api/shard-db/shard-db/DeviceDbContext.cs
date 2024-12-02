@@ -6,10 +6,13 @@ using Microsoft.EntityFrameworkCore;
 namespace shard_db;
 public class DeviceDbContext : DbContext
 {
-    public DeviceDbContext(DbContextOptions<DeviceDbContext> options)
+    public DeviceDbContext(DbContextOptions<DeviceDbContext> options, int SiteId)
         : base(options)
     {
+        this.SiteId = SiteId;
     }
+
+    public int SiteId;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -60,7 +63,7 @@ public class Sensor
     [ForeignKey("DeviceId")]
     public Device Device { get; set; } = null!;
 
-    public List<SensorData> SensorDatas { get; set; } = null!;
+    public List<SensorData> SensorDatas { get; set; } = [];
 }
 
 public class SensorData

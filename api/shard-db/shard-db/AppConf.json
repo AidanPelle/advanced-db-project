@@ -1,6 +1,5 @@
 ﻿[
   {
-    "id": 0,
     "name": "Vancouver",
     "devices": [
       {
@@ -74,7 +73,6 @@
     ]
   },
   {
-    "id": 1,
     "name": "Ohio",
     "devices": [
       {
@@ -164,7 +162,6 @@
     ]
   },
   {
-    "id": 2,
     "name": "Edmonton",
     "devices": [
       {
@@ -238,7 +235,6 @@
     ]
   },
   {
-    "id": 3,
     "name": "The_Mac",
     "devices": [
       {
