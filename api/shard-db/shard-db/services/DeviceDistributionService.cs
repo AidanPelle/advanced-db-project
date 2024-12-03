@@ -6,10 +6,10 @@ public class DeviceDisributionService
 {
     public DeviceDisributionService(DatabaseManager context, IServiceProvider serviceProvider)
     {
-        _context = context.BookKeepingDbContext;
+        _context = context;
         _serviceProvider = serviceProvider;
     }
-    private BookKeepingDbContext _context;
+    private DatabaseManager _context;
     private readonly IServiceProvider _serviceProvider;
 
     public async Task WriteLoop(int frequency)
@@ -21,7 +21,7 @@ public class DeviceDisributionService
         var pastThirtySeconds = DateTime.UtcNow.AddMilliseconds(frequency * -1);
 
         var deviceDict = new Dictionary<string, Dictionary<int, int>>();
-        var queryLogs = await _context.QueryLog.Where(q => q.AccessDate > pastThirtySeconds).ToListAsync();
+        var queryLogs = await _context.BookKeepingDbContext.QueryLog.Where(q => q.AccessDate > pastThirtySeconds).ToListAsync();
         foreach(var logItem in queryLogs)
         {
             if (deviceDict.ContainsKey(logItem.DeviceId))
@@ -57,7 +57,7 @@ public class DeviceDisributionService
             if (largestSite.Value == 0)
                 continue;
             
-            var assignedSiteId = (await _context.SiteDevice.FirstAsync(sd => sd.DeviceId == device.Key)).SiteId;
+            var assignedSiteId = (await _context.BookKeepingDbContext.SiteDevice.FirstAsync(sd => sd.DeviceId == device.Key)).SiteId;
 
             if (largestSite.Key == assignedSiteId)
                 continue;
@@ -84,24 +84,26 @@ public class DeviceDisributionService
     {
         using (var scope = _serviceProvider.CreateScope())
         {
-            var fromSiteName = await _context.Site.FindAsync(fromSiteId);
-            var toSiteName = await _context.Site.FindAsync(toSiteId);
-
-
-            var fromSiteOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
-                fromSiteOptionsBuilder.UseSqlite($"Data Source=./databases/{fromSiteName}.db");
-            var fromContext = new DeviceDbContext(fromSiteOptionsBuilder.Options, fromSiteId);
-
-
-            var toSiteOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
-                toSiteOptionsBuilder.UseSqlite($"Data Source=./databases/{toSiteName}.db");
-            var toContext = new DeviceDbContext(toSiteOptionsBuilder.Options, toSiteId);
+            var fromContext = _context.DeviceDbContexts.First(d => d.SiteId == fromSiteId);
+            var toContext = _context.DeviceDbContexts.First(d => d.SiteId == toSiteId);
 
 
             try {
-                var device = await fromContext.Device.Include(d => d.Sensors).ThenInclude(s => s.SensorDatas).FirstOrDefaultAsync(d => d.Id == deviceId);
+                var device = (await fromContext.Device.Include(d => d.Sensors).ThenInclude(s => s.SensorDatas).FirstOrDefaultAsync(d => d.Id == deviceId))!;
+                var data = device.Sensors.SelectMany(s => s.SensorDatas).ToList();
+                
+                fromContext.RemoveRange(data);
+                fromContext.SaveChanges();
+                fromContext.RemoveRange(device.Sensors);
+                fromContext.SaveChanges();
+                fromContext.Remove(device);
+                fromContext.SaveChanges();
+
+                data.ForEach(sd => sd.Id = 0);
                 toContext.Add(device!);
                 toContext.SaveChanges();
+
+                
             } catch (Exception e)
             {
                 Console.WriteLine(e);
