@@ -47,30 +47,6 @@ public class RandomReadService
         }
 
         return matrix;
-            // var context = scope.ServiceProvider.GetRequiredService<DatabaseManager>();
-            // var sites = context.BookKeepingDbContext.Site.ToList();
-            // foreach (var site in sites)
-            // {
-            //     var siteFreq = new ReadFrequencyMatrixDto();
-            //     siteFreq.SiteId = site.Id;
-            //     siteFreq.SiteName = site.Name;
-            //     var frequenciesForSite = frequencies.Where(f => f.RequestingSite.Id == site.Id).ToList();
-            //     var deviceReadFrequencies = new List<DeviceReadFrequency>();
-            //     foreach (var frequency in frequenciesForSite)
-            //     {
-            //         deviceReadFrequencies.Add(new DeviceReadFrequency
-            //         {
-            //             DeviceId = frequency.Device.Id,
-            //             DeviceName = frequency.Device.Name,
-            //             FrequencyValue = frequency.FrequencyValue
-            //         });
-            //     }
-            //
-            //     siteFreq.Frequencies = deviceReadFrequencies;
-            //     matrix.Add(siteFreq);
-            // }
-        //
-        // return matrix;
     }
 
     public void SetReadFrequency(string deviceId, int siteId, int frequencyValue)
@@ -129,14 +105,15 @@ public class RandomReadService
             bkDbContextOptionsBuilder.UseSqlite("Data Source=./databases/BookKeeping.db");
 
             var bookKeepingDbContext = new BookKeepingDbContext(bkDbContextOptionsBuilder.Options);
-            bookKeepingDbContext.Add(new QueryLog
+            var entry = new QueryLog
             {
                 DeviceId = frequency.Device.Id,
                 SiteId = frequency.RequestingSite.Id,
                 AccessDate = DateTime.UtcNow,
                 DataType = DATA_TYPE.READ,
                 DataVolume = JsonSerializer.SerializeToUtf8Bytes(res).Length
-            });
+            };
+            bookKeepingDbContext.Add(entry);
             bookKeepingDbContext.SaveChanges();
 
             // Console.WriteLine($"Reading For: {frequency.RequestingSite.Name} for {frequency.AssignedSite.Name}. Device: {frequency.Device.Name}");

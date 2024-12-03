@@ -102,11 +102,10 @@ public class RandomWriteService
                         DeviceId = frequency.Device.Id,
                         SiteId = frequency.RequestingSite.Id,
                         AccessDate = DateTime.UtcNow,
-                        DataType = DATA_TYPE.READ,
+                        DataType = DATA_TYPE.WRITE,
                         DataVolume = JsonSerializer.SerializeToUtf8Bytes(data).Length
                     });
                     bookKeepingDbContext.SaveChanges();
-
                     // Console.WriteLine($"Site Requesting: {frequency.RequestingSite.Name}, Device: {frequency.Device.Name}, Sensor: {sensor.Name}");
                 }
                 catch (Exception error) {

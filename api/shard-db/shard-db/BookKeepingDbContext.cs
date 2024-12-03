@@ -66,6 +66,6 @@ public class SiteDevice
 
 public enum DATA_TYPE
 {
-    READ,
-    WRITE
+    READ = 0,
+    WRITE = 1
 }
