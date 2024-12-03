@@ -86,11 +86,12 @@ public class RandomWriteService
             };
             using (var scope = _serviceProvider.CreateScope())
             {
-                var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
-                deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{frequency.AssignedSite.Name}.db");
-                var context = new DeviceDbContext(deviceDbOptionsBuilder.Options, frequency.AssignedSite.Id);
-                context.Add(data);
                 try {
+                    var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
+                    deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{frequency.AssignedSite.Name}.db");
+                    var context = new DeviceDbContext(deviceDbOptionsBuilder.Options, frequency.AssignedSite.Id);
+                    context.Add(data);
+                
                     await context.SaveChangesAsync();
 
                     var bkDbContextOptionsBuilder = new DbContextOptionsBuilder<BookKeepingDbContext>();
