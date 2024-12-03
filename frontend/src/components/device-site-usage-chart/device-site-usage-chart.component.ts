@@ -58,6 +58,16 @@ export class DeviceSiteUsageChartComponent {
     };
 
     this.chart = new Chart(this.name, {
+      options: {
+        plugins: {
+          title: {
+            display: true,
+            text: this.deviceUsage.deviceName,
+            align: 'center',
+            position: 'top'
+          }
+        }
+      },
       type: "bar",
       data: data
     })

@@ -1,5 +1,7 @@
-<div>
+<div style="display: flex; flex-direction: row; gap: 20px; flex-wrap: wrap;">
   @for (device of devices; track device) {
-    <app-device-site-usage-chart [name]="device.deviceName" [deviceUsage]="device"></app-device-site-usage-chart>
+    <div style="display: flex; flex-direction: column; flex: 1 0 40%;">
+      <app-device-site-usage-chart [name]="device.deviceName" [deviceUsage]="device"></app-device-site-usage-chart>
+    </div>
   }
 </div>
