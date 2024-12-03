@@ -1,0 +1,5 @@
+<div>
+  @for (device of devices; track device) {
+    <app-device-site-usage-chart [name]="device.deviceName" [deviceUsage]="device"></app-device-site-usage-chart>
+  }
+</div>

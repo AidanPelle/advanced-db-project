@@ -29,4 +29,8 @@ export class AppComponent {
   navToReadMatrix() {
     this.router.navigate(["readMatrix"]);
   }
+
+  navToDeviceSiteUsage() {
+    this.router.navigate(["trends/device-site-usage"]);
+  }
 }

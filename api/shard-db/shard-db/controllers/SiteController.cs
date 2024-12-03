@@ -63,7 +63,7 @@ public class SitesController(DatabaseManager context, RandomWriteService randomW
         return Ok(siteDistributions);
     }
 
-    [HttpGet("statistics")]
+    [HttpGet("device-site-usage")]
     public async Task<ActionResult> GetTopDevices([FromQuery] int offset)
     {
         var pastThirtySeconds = DateTime.UtcNow.AddMilliseconds(-offset * 1000);
@@ -108,7 +108,7 @@ public class SitesController(DatabaseManager context, RandomWriteService randomW
             
             foreach (var kvp in deviceDict)
             {
-                deviceSiteUsage.usages.Add(kvp.Value);
+                deviceSiteUsage.siteUsage.Add(kvp.Value);
             }
             deviceSiteUsages.Add(deviceSiteUsage);
         }
@@ -120,7 +120,7 @@ public class SitesController(DatabaseManager context, RandomWriteService randomW
     class DeviceSiteDataUsageDto
     {
         public string DeviceName { get; set; } = null!;
-        public List<SiteDataUsageDto> usages { get; set; } = [];
+        public List<SiteDataUsageDto> siteUsage { get; set; } = [];
     }
 
     class SiteDataUsageDto

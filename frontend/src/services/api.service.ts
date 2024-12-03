@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {DeviceDto} from '../models/DeviceDto';
 import {Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {environment} from '../environment/environment';
 import {WriteMatrixDto} from '../models/WriteMatrix';
+import {DeviceSiteUsageDto} from "../models/DeviceSiteUsageDto";
 
 @Injectable({
   providedIn: 'root'
@@ -55,5 +56,11 @@ export class ApiService {
       deviceId: deviceId,
     };
     return this.http.post<void>(url, payload);
+  }
+
+  getDeviceSiteUsages(timeOffset: number): Observable<DeviceSiteUsageDto[]> {
+    const url = environment.apiUrl + "/sites/device-site-usage";
+    const params = new HttpParams().set('offset', timeOffset.toString());
+    return this.http.get<DeviceSiteUsageDto[]>(url, {params});
   }
 }
