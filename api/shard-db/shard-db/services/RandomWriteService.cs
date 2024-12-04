@@ -76,44 +76,45 @@ public class RandomWriteService
 
     private async void WriteLoop(WriteFrequency frequency)
     {
-        foreach (var sensor in frequency.Device.Sensors)
-        {
-            var data = new SensorData
-            {
-                SensorId = sensor.Id,
-                ReceivedTimestamp = DateTime.UtcNow,
-                Value = random.NextDouble() * 1000,
-            };
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                try {
-                    var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
-                    deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{frequency.AssignedSite.Name}.db");
-                    var context = new DeviceDbContext(deviceDbOptionsBuilder.Options, frequency.AssignedSite.Id);
-                    context.Add(data);
-                
-                    await context.SaveChangesAsync();
+        try {
+            foreach (var sensor in frequency.Device.Sensors) {
+                var data = new SensorData {
+                    SensorId = sensor.Id,
+                    ReceivedTimestamp = DateTime.UtcNow,
+                    Value = random.NextDouble() * 1000,
+                };
+                using (var scope = _serviceProvider.CreateScope()) {
+                    try {
+                        var deviceDbOptionsBuilder = new DbContextOptionsBuilder<DeviceDbContext>();
+                        deviceDbOptionsBuilder.UseSqlite($"Data Source=./databases/{frequency.AssignedSite.Name}.db");
+                        var context = new DeviceDbContext(deviceDbOptionsBuilder.Options, frequency.AssignedSite.Id);
+                        context.Add(data);
 
-                    var bkDbContextOptionsBuilder = new DbContextOptionsBuilder<BookKeepingDbContext>();
-                    bkDbContextOptionsBuilder.UseSqlite("Data Source=./databases/BookKeeping.db");
+                        await context.SaveChangesAsync();
 
-                    var bookKeepingDbContext = new BookKeepingDbContext(bkDbContextOptionsBuilder.Options);
-                    bookKeepingDbContext.Add(new QueryLog
-                    {
-                        DeviceId = frequency.Device.Id,
-                        SiteId = frequency.RequestingSite.Id,
-                        AccessDate = DateTime.UtcNow,
-                        DataType = DATA_TYPE.WRITE,
-                        DataVolume = JsonSerializer.SerializeToUtf8Bytes(data).Length
-                    });
-                    bookKeepingDbContext.SaveChanges();
-                    // Console.WriteLine($"Site Requesting: {frequency.RequestingSite.Name}, Device: {frequency.Device.Name}, Sensor: {sensor.Name}");
+                        var bkDbContextOptionsBuilder = new DbContextOptionsBuilder<BookKeepingDbContext>();
+                        bkDbContextOptionsBuilder.UseSqlite("Data Source=./databases/BookKeeping.db");
+
+                        var bookKeepingDbContext = new BookKeepingDbContext(bkDbContextOptionsBuilder.Options);
+                        bookKeepingDbContext.Add(new QueryLog {
+                            DeviceId = frequency.Device.Id,
+                            SiteId = frequency.RequestingSite.Id,
+                            AccessDate = DateTime.UtcNow,
+                            DataType = DATA_TYPE.WRITE,
+                            DataVolume = JsonSerializer.SerializeToUtf8Bytes(data).Length
+                        });
+                        bookKeepingDbContext.SaveChanges();
+                        // Console.WriteLine($"Site Requesting: {frequency.RequestingSite.Name}, Device: {frequency.Device.Name}, Sensor: {sensor.Name}");
+                    }
+                    catch (Exception error) {
+                        Console.WriteLine(error);
+                    }
+
                 }
-                catch (Exception error) {
-                    Console.WriteLine(error);
-                }
-                
             }
+        }
+        catch (InvalidOperationException ex) {
+            Console.WriteLine(ex);
         }
         await Task.Delay(frequency.FrequencyValue);
         WriteLoop(frequency);

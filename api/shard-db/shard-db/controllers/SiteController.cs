@@ -63,6 +63,42 @@ public class SitesController(DatabaseManager context, RandomWriteService randomW
         return Ok(siteDistributions);
     }
 
+    public DateTime GetInterval(DateTime ts, int interval = 15) {
+        var newTs = ts;
+        newTs = newTs.AddSeconds(-(ts.Minute % interval));
+        newTs = newTs.AddMilliseconds(-ts.Millisecond - 1000 * ts.Second);
+        return newTs;
+    }
+
+    [HttpGet("device-site-time")]
+    public async Task<ActionResult> GetDeviceUsageOverTime([FromQuery] int timeOffset = 600, [FromQuery] int interval = 15) {
+        var devices = context.DeviceDbContexts.SelectMany(d => d.Device.ToList()).ToList();
+        var usages = new List<List<DeviceSiteUsageKey>>();
+        foreach (var device in devices) {
+            var offset = DateTime.UtcNow.AddMilliseconds(-timeOffset * 1000);
+            var queryLogs = await context.BookKeepingDbContext.QueryLog
+                .Where(q => q.DeviceId == device.Id && q.AccessDate > offset)
+                .Include(s => s.Site)
+                .ToListAsync();
+
+            var groups = queryLogs.GroupBy(x => new {
+                    x.Site.Name,
+                    AccessDate = GetInterval(x.AccessDate, interval)
+            });
+            
+            var data = groups.Select(grp => new DeviceSiteUsageKey {
+                SiteName = grp.Key.Name,
+                Ts = grp.Key.AccessDate,
+                Value = {
+                    ReadUsage = grp.Where(x => x.DataType == DATA_TYPE.READ).Sum(x => x.DataVolume),
+                    WriteUsage = grp.Where(x => x.DataType == DATA_TYPE.WRITE).Sum(x => x.DataVolume),
+                } 
+            }).ToList();
+            // usages.Add(data);
+        }
+        return Ok(usages);
+    }
+
     [HttpGet("device-site-usage")]
     public async Task<ActionResult> GetTopDevices([FromQuery] int offset)
     {
@@ -115,6 +151,23 @@ public class SitesController(DatabaseManager context, RandomWriteService randomW
         
         
         return Ok(deviceSiteUsages);
+    }
+
+    class DeviceSiteUsageSeries {
+        public string DeviceName { get; set; } = null!;
+        public List<DeviceSiteUsageTs> Series { get; set; } = [];
+    }
+
+    class DeviceSiteUsageKey {
+        public string SiteName { get; set; } = null!;
+        public DateTime Ts { get; set; }
+        public DeviceSiteUsageTs Value { get; set; } = null!;
+    }
+    class DeviceSiteUsageTs {
+        
+        public int ReadUsage { get; set; }
+        public int WriteUsage { get; set; }
+        
     }
 
     class DeviceSiteDataUsageDto
